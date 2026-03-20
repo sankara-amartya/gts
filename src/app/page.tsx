@@ -86,20 +86,26 @@ export default function Dashboard() {
             <CardTitle>Active Mandates Overview</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="flex space-x-4 overflow-x-auto pb-2">
               {activeMandates.slice(0, 5).map((mandate) => {
-                const client = clients.find(c => c.id === mandate.clientId);
+                const client = clients.find((c) => c.id === mandate.clientId);
                 return (
-                  <div key={mandate.id} className="flex items-center">
-                    <div className="flex-1 space-y-1">
+                  <div
+                    key={mandate.id}
+                    className="flex flex-col justify-between rounded-lg border bg-card p-4 w-56 flex-shrink-0"
+                  >
+                    <div>
                       <p className="text-sm font-medium leading-none">
                         {mandate.role}
                       </p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground mt-1">
                         {client?.name}
                       </p>
                     </div>
-                    <Badge variant={getStageBadgeVariant(mandate.stage)}>
+                    <Badge
+                      variant={getStageBadgeVariant(mandate.stage)}
+                      className="mt-4 self-start"
+                    >
                       {mandate.stage}
                     </Badge>
                   </div>
