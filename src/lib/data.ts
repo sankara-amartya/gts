@@ -1,9 +1,13 @@
 import type {
   AssessmentTemplate,
+  BillingProfile,
   CandidateAssessmentAttempt,
   CandidateAttendanceRecord,
   ComplianceAuditEvent,
   CertificateRecord,
+  DunningCase,
+  DunningStage,
+  DunningStatus,
   CandidateCommunicationEvent,
   CandidateDocumentRecord,
   CandidateIdentityProfile,
@@ -12,6 +16,14 @@ import type {
   CandidateTimelineEvent,
   CandidateTrainingEnrollment,
   DocumentVerificationQueueItem,
+  Invoice,
+  InvoiceStatus,
+  PaymentMethod,
+  Receipt,
+  ReconciliationRecord,
+  ReconciliationStatus,
+  Refund,
+  RefundStatus,
   TrainingBatch,
   TrainingSession,
   Candidate,
@@ -99,6 +111,179 @@ export const candidateStatuses: Candidate['status'][] = ['Screening', 'Training'
 export const trainingCategories: TrainingCourse['category'][] = ['Language', 'Technical'];
 export const transactionStatuses: Transaction['status'][] = ['Pending', 'Paid', 'Failed', 'Refunded'];
 export const transactionCurrencies: Transaction['currency'][] = ['INR', 'EUR', 'CAD', 'NZD', 'USD', 'QAR'];
+
+export const billingProfiles: BillingProfile[] = [
+  {
+    id: 'bp-1',
+    candidateId: 'can-1',
+    mandateId: 'man-1',
+    model: 'Hybrid',
+    baseCurrency: 'EUR',
+    splitType: 'Percentage',
+    candidateShare: 30,
+    employerShare: 70,
+    notes: 'Language and documentation by candidate, placement by employer.',
+    createdAt: '2026-03-10T08:00:00.000Z',
+  },
+  {
+    id: 'bp-2',
+    candidateId: 'can-2',
+    mandateId: 'man-1',
+    model: 'Candidate Pay',
+    baseCurrency: 'INR',
+    notes: 'Candidate-self funded language track.',
+    createdAt: '2026-03-11T08:00:00.000Z',
+  },
+  {
+    id: 'bp-3',
+    candidateId: 'can-4',
+    mandateId: 'man-5',
+    model: 'Employer Pay',
+    baseCurrency: 'USD',
+    notes: 'Client covers visa and deployment costs.',
+    createdAt: '2026-03-12T08:00:00.000Z',
+  },
+];
+
+export const invoices: Invoice[] = [
+  {
+    id: 'inv-1',
+    invoiceNumber: 'INV-2026-0001',
+    candidateId: 'can-1',
+    mandateId: 'man-1',
+    payerType: 'Candidate',
+    payerId: 'can-1',
+    currency: 'EUR',
+    issuedAt: '2026-03-05T08:00:00.000Z',
+    dueAt: '2026-03-15T08:00:00.000Z',
+    status: 'Partially Paid',
+    lineItems: [
+      { id: 'ili-1', description: 'B2 Training Fee', quantity: 1, unitAmount: 600, taxPercent: 0, discountAmount: 0 },
+      { id: 'ili-2', description: 'Document Verification', quantity: 1, unitAmount: 150, taxPercent: 0, discountAmount: 0 },
+    ],
+    notes: 'Hybrid candidate-side invoice.',
+  },
+  {
+    id: 'inv-2',
+    invoiceNumber: 'INV-2026-0002',
+    candidateId: 'can-1',
+    mandateId: 'man-1',
+    payerType: 'Employer',
+    payerId: 'cli-1',
+    currency: 'USD',
+    issuedAt: '2026-03-07T08:00:00.000Z',
+    dueAt: '2026-03-21T08:00:00.000Z',
+    status: 'Sent',
+    lineItems: [
+      { id: 'ili-3', description: 'Placement Retainer Tranche 1', quantity: 1, unitAmount: 2500, taxPercent: 0, discountAmount: 0 },
+    ],
+  },
+  {
+    id: 'inv-3',
+    invoiceNumber: 'INV-2026-0003',
+    candidateId: 'can-4',
+    mandateId: 'man-5',
+    payerType: 'Employer',
+    payerId: 'cli-4',
+    currency: 'CAD',
+    issuedAt: '2026-03-01T08:00:00.000Z',
+    dueAt: '2026-03-10T08:00:00.000Z',
+    status: 'Overdue',
+    lineItems: [
+      { id: 'ili-4', description: 'Visa Filing Support', quantity: 1, unitAmount: 500, taxPercent: 0, discountAmount: 0 },
+    ],
+  },
+];
+
+export const receipts: Receipt[] = [
+  {
+    id: 'rcp-1',
+    receiptNumber: 'RCP-2026-0001',
+    payerType: 'Candidate',
+    payerId: 'can-1',
+    currency: 'EUR',
+    amount: 400,
+    method: 'Bank Transfer',
+    bankReference: 'BNK-778812',
+    receivedAt: '2026-03-12T09:00:00.000Z',
+    status: 'Captured',
+    allocations: [{ invoiceId: 'inv-1', amount: 400 }],
+  },
+  {
+    id: 'rcp-2',
+    receiptNumber: 'RCP-2026-0002',
+    payerType: 'Employer',
+    payerId: 'cli-1',
+    currency: 'USD',
+    amount: 1000,
+    method: 'Gateway',
+    gatewayReference: 'GTW-12345',
+    receivedAt: '2026-03-18T10:00:00.000Z',
+    status: 'Captured',
+    allocations: [{ invoiceId: 'inv-2', amount: 1000 }],
+  },
+];
+
+export const refunds: Refund[] = [
+  {
+    id: 'rfd-1',
+    refundNumber: 'RFD-2026-0001',
+    invoiceId: 'inv-1',
+    receiptId: 'rcp-1',
+    payerType: 'Candidate',
+    payerId: 'can-1',
+    currency: 'EUR',
+    amount: 50,
+    reason: 'Duplicate charge correction',
+    status: 'Processed',
+    createdAt: '2026-03-13T09:00:00.000Z',
+    processedAt: '2026-03-13T12:00:00.000Z',
+  },
+];
+
+export const reconciliationRecords: ReconciliationRecord[] = [
+  {
+    id: 'rec-1',
+    receiptId: 'rcp-1',
+    bankReference: 'BNK-778812',
+    statementAmount: 400,
+    statementDate: '2026-03-12T00:00:00.000Z',
+    status: 'Matched',
+    differenceAmount: 0,
+    note: 'Auto-matched by bank reference and amount.',
+  },
+  {
+    id: 'rec-2',
+    receiptId: 'rcp-2',
+    bankReference: 'GTW-12345',
+    statementAmount: 980,
+    statementDate: '2026-03-18T00:00:00.000Z',
+    status: 'Exception',
+    differenceAmount: -20,
+    note: 'Gateway fee mismatch.',
+  },
+];
+
+export const dunningCases: DunningCase[] = [
+  {
+    id: 'dun-1',
+    invoiceId: 'inv-3',
+    payerType: 'Employer',
+    payerId: 'cli-4',
+    stage: 'Warning',
+    status: 'Sent',
+    nextActionAt: '2026-03-22T09:00:00.000Z',
+    lastSentAt: '2026-03-18T09:00:00.000Z',
+    attemptCount: 2,
+  },
+];
+
+export const invoiceStatuses: InvoiceStatus[] = ['Draft', 'Sent', 'Partially Paid', 'Paid', 'Overdue', 'Cancelled'];
+export const paymentMethods: PaymentMethod[] = ['Bank Transfer', 'Card', 'Cash', 'Gateway'];
+export const refundStatuses: RefundStatus[] = ['Initiated', 'Processed', 'Failed'];
+export const reconciliationStatuses: ReconciliationStatus[] = ['Unmatched', 'Matched', 'Exception'];
+export const dunningStages: DunningStage[] = ['Friendly Reminder', 'Warning', 'Final Notice', 'Escalated'];
+export const dunningStatuses: DunningStatus[] = ['Pending', 'Sent', 'Resolved'];
 
 export const workflowTemplates: WorkflowTemplate[] = [
   {

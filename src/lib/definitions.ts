@@ -141,6 +141,117 @@ export type Transaction = {
     createdAt: string;
 }
 
+export type BillingModel = 'Candidate Pay' | 'Employer Pay' | 'Hybrid';
+export type BillingSplitType = 'Fixed' | 'Percentage';
+
+export type BillingProfile = {
+  id: string;
+  candidateId: string;
+  mandateId: string;
+  model: BillingModel;
+  baseCurrency: Transaction['currency'];
+  splitType?: BillingSplitType;
+  candidateShare?: number;
+  employerShare?: number;
+  notes?: string;
+  createdAt: string;
+};
+
+export type InvoiceStatus = 'Draft' | 'Sent' | 'Partially Paid' | 'Paid' | 'Overdue' | 'Cancelled';
+export type InvoicePayerType = 'Candidate' | 'Employer';
+
+export type InvoiceLineItem = {
+  id: string;
+  description: string;
+  quantity: number;
+  unitAmount: number;
+  taxPercent: number;
+  discountAmount: number;
+};
+
+export type Invoice = {
+  id: string;
+  invoiceNumber: string;
+  candidateId?: string;
+  mandateId?: string;
+  payerType: InvoicePayerType;
+  payerId: string;
+  currency: Transaction['currency'];
+  issuedAt: string;
+  dueAt: string;
+  status: InvoiceStatus;
+  lineItems: InvoiceLineItem[];
+  notes?: string;
+};
+
+export type ReceiptStatus = 'Captured' | 'Reversed';
+export type PaymentMethod = 'Bank Transfer' | 'Card' | 'Cash' | 'Gateway';
+
+export type ReceiptAllocation = {
+  invoiceId: string;
+  amount: number;
+};
+
+export type Receipt = {
+  id: string;
+  receiptNumber: string;
+  payerType: InvoicePayerType;
+  payerId: string;
+  currency: Transaction['currency'];
+  amount: number;
+  method: PaymentMethod;
+  gatewayReference?: string;
+  bankReference?: string;
+  receivedAt: string;
+  status: ReceiptStatus;
+  allocations: ReceiptAllocation[];
+};
+
+export type RefundStatus = 'Initiated' | 'Processed' | 'Failed';
+
+export type Refund = {
+  id: string;
+  refundNumber: string;
+  invoiceId: string;
+  receiptId?: string;
+  payerType: InvoicePayerType;
+  payerId: string;
+  currency: Transaction['currency'];
+  amount: number;
+  reason: string;
+  status: RefundStatus;
+  createdAt: string;
+  processedAt?: string;
+};
+
+export type ReconciliationStatus = 'Unmatched' | 'Matched' | 'Exception';
+
+export type ReconciliationRecord = {
+  id: string;
+  receiptId: string;
+  bankReference: string;
+  statementAmount: number;
+  statementDate: string;
+  status: ReconciliationStatus;
+  differenceAmount: number;
+  note?: string;
+};
+
+export type DunningStage = 'Friendly Reminder' | 'Warning' | 'Final Notice' | 'Escalated';
+export type DunningStatus = 'Pending' | 'Sent' | 'Resolved';
+
+export type DunningCase = {
+  id: string;
+  invoiceId: string;
+  payerType: InvoicePayerType;
+  payerId: string;
+  stage: DunningStage;
+  status: DunningStatus;
+  nextActionAt: string;
+  lastSentAt?: string;
+  attemptCount: number;
+};
+
 export type WorkflowTriggerEvent = 'on_enter' | 'on_exit' | 'on_breach';
 export type WorkflowActionType = 'notify' | 'create_task' | 'update_candidate';
 
