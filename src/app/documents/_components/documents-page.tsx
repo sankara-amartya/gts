@@ -28,7 +28,7 @@ export function DocumentsPage() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedPack, setSelectedPack] = useState<DocumentPack | null>(null);
     const [queueItems, setQueueItems] = useState<DocumentVerificationQueueItem[]>(documentVerificationQueue);
-    const [candidateDocuments, setCandidateDocuments] = useState<CandidateDocumentRecord[]>(seededCandidateDocuments);
+    const [candidateDocuments, setCandidateDocuments] = useState<CandidateDocumentRecord[]>(seededCandidateDocuments ?? []);
     const [auditEvents, setAuditEvents] = useState<ComplianceAuditEvent[]>(complianceAuditEvents);
 
     const filteredPacks = useMemo(() => {
@@ -39,8 +39,9 @@ export function DocumentsPage() {
     }, [search]);
 
     const complianceSummary = useMemo(() => {
+        const docsCollection = candidateDocuments ?? [];
         const byCandidate = candidates.map((candidate) => {
-            const docs = candidateDocuments.filter((document) => document.candidateId === candidate.id);
+            const docs = docsCollection.filter((document) => document.candidateId === candidate.id);
             return getCandidateComplianceStatus(docs);
         });
 
@@ -58,7 +59,7 @@ export function DocumentsPage() {
 
         return queueItems.filter((item) => {
             const candidateName = candidates.find((candidate) => candidate.id === item.candidateId)?.name ?? '';
-            const documentName = candidateDocuments.find((document) => document.id === item.documentId)?.documentName ?? '';
+            const documentName = (candidateDocuments ?? []).find((document) => document.id === item.documentId)?.documentName ?? '';
 
             return (
                 candidateName.toLowerCase().includes(search.toLowerCase()) ||
@@ -68,7 +69,7 @@ export function DocumentsPage() {
     }, [search, queueItems, candidateDocuments]);
 
     const documentsWithExpiry = useMemo(() => {
-        return candidateDocuments.filter((document) => Boolean(document.expiryDate));
+        return (candidateDocuments ?? []).filter((document) => Boolean(document.expiryDate));
     }, [candidateDocuments]);
 
     const addAuditEvent = (event: Omit<ComplianceAuditEvent, 'id' | 'timestamp'>) => {
