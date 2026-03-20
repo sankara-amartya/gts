@@ -19,9 +19,12 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { transactions, trainingCourses } from "@/lib/data";
+import { getMigrationTemplateByCountry, updateCandidateMigrationMilestone } from "@/lib/migration-milestones";
 import type {
   CandidateDocumentStatus,
   CandidateLifecycleSnapshot,
+  MigrationMilestoneCode,
+  MigrationMilestoneStatus,
   CandidateTimelineEvent,
 } from "@/lib/definitions";
 
@@ -31,9 +34,11 @@ const eventTypeLabels: Record<string, string> = {
   training: "Training",
   payment: "Payment",
   communication: "Communication",
+  migration: "Migration",
 };
 
 const documentStatuses: CandidateDocumentStatus[] = ["Missing", "Submitted", "Verified", "Rejected"];
+const migrationStatuses: MigrationMilestoneStatus[] = ["Not Started", "In Progress", "Completed", "Blocked"];
 
 export function CandidateLifecycleDetailClient({
   initialSnapshot,
@@ -45,7 +50,22 @@ export function CandidateLifecycleDetailClient({
   const { toast } = useToast();
   const [identity, setIdentity] = useState(initialSnapshot.identity);
   const [documents, setDocuments] = useState(initialSnapshot.documents);
+  const [migrationMilestones, setMigrationMilestones] = useState(initialSnapshot.migrationMilestones);
   const [timeline, setTimeline] = useState(initialTimeline);
+
+  const migrationTemplate = useMemo(
+    () => getMigrationTemplateByCountry(initialSnapshot.migrationCountry),
+    [initialSnapshot.migrationCountry]
+  );
+
+  const migrationCompletion = useMemo(() => {
+    const completed = migrationMilestones.filter((item) => item.status === "Completed").length;
+    return {
+      completed,
+      total: migrationTemplate.length,
+      percent: migrationTemplate.length ? Math.round((completed / migrationTemplate.length) * 100) : 0,
+    };
+  }, [migrationMilestones, migrationTemplate]);
 
   const verifiedDocumentsCount = useMemo(
     () => documents.filter((doc) => doc.status === "Verified").length,
@@ -114,6 +134,34 @@ export function CandidateLifecycleDetailClient({
     toast({
       title: "Document updated",
       description: `${document.documentName} is now ${status}.`,
+    });
+  };
+
+  const handleMigrationStatusChange = (code: MigrationMilestoneCode, status: MigrationMilestoneStatus) => {
+    const result = updateCandidateMigrationMilestone(
+      initialSnapshot.candidate.id,
+      code,
+      status,
+      "ops-lifecycle"
+    );
+
+    if (!result) {
+      return;
+    }
+
+    setMigrationMilestones((current) =>
+      current.map((item) => (item.code === result.code ? { ...result } : item))
+    );
+
+    addTimelineEntry({
+      type: "migration",
+      title: `Milestone ${status}`,
+      detail: `${result.code} updated for ${result.country}`,
+    });
+
+    toast({
+      title: "Migration milestone updated",
+      description: `${result.code} is now ${status}.`,
     });
   };
 
@@ -410,10 +458,84 @@ export function CandidateLifecycleDetailClient({
             <CardHeader>
               <CardTitle>Migration</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <p><span className="font-medium">Current status:</span> {initialSnapshot.candidate.migrationStatus}</p>
-              <p><span className="font-medium">Workflow stage:</span> {initialSnapshot.currentStageLabel ?? "N/A"}</p>
-              <p><span className="font-medium">SLA state:</span> {initialSnapshot.slaState ?? "N/A"}</p>
+            <CardContent className="space-y-4">
+              <div className="grid gap-3 md:grid-cols-4">
+                <div>
+                  <p className="text-xs text-muted-foreground">Country Template</p>
+                  <p className="font-semibold">{initialSnapshot.migrationCountry}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Current Status</p>
+                  <p className="font-semibold">{initialSnapshot.candidate.migrationStatus}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Workflow Stage</p>
+                  <p className="font-semibold">{initialSnapshot.currentStageLabel ?? "N/A"}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Completion</p>
+                  <p className="font-semibold">{migrationCompletion.completed}/{migrationCompletion.total} ({migrationCompletion.percent}%)</p>
+                </div>
+              </div>
+
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Milestone</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Due Date</TableHead>
+                    <TableHead>Completed At</TableHead>
+                    <TableHead>Update</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {migrationTemplate.map((templateMilestone) => {
+                    const progress = migrationMilestones.find((item) => item.code === templateMilestone.code);
+                    return (
+                      <TableRow key={templateMilestone.id}>
+                        <TableCell>
+                          <div className="font-medium">{templateMilestone.label}</div>
+                          <div className="text-xs text-muted-foreground">SLA {templateMilestone.slaDays ?? "N/A"} days</div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              progress?.status === "Completed"
+                                ? "secondary"
+                                : progress?.status === "Blocked"
+                                ? "destructive"
+                                : "outline"
+                            }
+                          >
+                            {progress?.status ?? "Not Started"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{progress?.dueDate ? new Date(progress.dueDate).toLocaleDateString() : "N/A"}</TableCell>
+                        <TableCell>{progress?.completedAt ? new Date(progress.completedAt).toLocaleDateString() : "N/A"}</TableCell>
+                        <TableCell>
+                          <Select
+                            value={progress?.status ?? "Not Started"}
+                            onValueChange={(value) =>
+                              handleMigrationStatusChange(templateMilestone.code, value as MigrationMilestoneStatus)
+                            }
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="Set status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {migrationStatuses.map((status) => (
+                                <SelectItem key={status} value={status}>
+                                  {status}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </TabsContent>

@@ -3,6 +3,7 @@ import type {
   BillingProfile,
   CandidateAssessmentAttempt,
   CandidateAttendanceRecord,
+  CandidateMigrationMilestone,
   ComplianceAuditEvent,
   CertificateRecord,
   DunningCase,
@@ -19,6 +20,7 @@ import type {
   Invoice,
   InvoiceStatus,
   PaymentMethod,
+  PaymentPlanTemplate,
   Receipt,
   ReconciliationRecord,
   ReconciliationStatus,
@@ -32,6 +34,7 @@ import type {
   CommercialTerm,
   DocumentPack,
   Mandate,
+  MigrationMilestoneTemplate,
   ProgressUpdate,
   TrainingCourse,
   Transaction,
@@ -142,6 +145,34 @@ export const billingProfiles: BillingProfile[] = [
     baseCurrency: 'USD',
     notes: 'Client covers visa and deployment costs.',
     createdAt: '2026-03-12T08:00:00.000Z',
+  },
+];
+
+export const paymentPlanTemplates: PaymentPlanTemplate[] = [
+  {
+    id: 'ppt-1',
+    name: 'Candidate Pay - Germany Standard',
+    model: 'Candidate Pay',
+    currency: 'EUR',
+    notes: 'Candidate-funded model with staged milestones.',
+    installments: [
+      { id: 'ppi-1', label: 'Enrollment Advance', percent: 30, trigger: 'Enrollment' },
+      { id: 'ppi-2', label: 'Documents Completed', percent: 30, trigger: 'Document Approval' },
+      { id: 'ppi-3', label: 'Visa Filing', percent: 20, trigger: 'Visa Filed' },
+      { id: 'ppi-4', label: 'Pre-Departure Balance', percent: 20, trigger: 'Pre-Departure' },
+    ],
+  },
+  {
+    id: 'ppt-2',
+    name: 'Hybrid - GCC Express',
+    model: 'Hybrid',
+    currency: 'USD',
+    notes: 'Candidate pays onboarding, employer pays closure milestones.',
+    installments: [
+      { id: 'ppi-5', label: 'Candidate Onboarding', percent: 25, trigger: 'Enrollment' },
+      { id: 'ppi-6', label: 'Employer Offer Milestone', percent: 35, trigger: 'Offer Accepted' },
+      { id: 'ppi-7', label: 'Deployment Completion', percent: 40, trigger: 'Deployment' },
+    ],
   },
 ];
 
@@ -594,6 +625,66 @@ export const candidateCommunications: CandidateCommunicationEvent[] = [
 
 export const candidateLifecycleSnapshots: CandidateLifecycleSnapshot[] = [];
 export const candidateTimelineEvents: CandidateTimelineEvent[] = [];
+
+export const migrationMilestoneTemplates: MigrationMilestoneTemplate[] = [
+  { id: 'mmt-gcc-1', country: 'GCC', code: 'MEDICAL_EXAMS', label: 'Medical Exams', sequence: 1, slaDays: 7 },
+  { id: 'mmt-gcc-2', country: 'GCC', code: 'PCC', label: 'Police Clearance Certificate (PCC)', sequence: 2, slaDays: 10 },
+  { id: 'mmt-gcc-3', country: 'GCC', code: 'BIOMETRICS', label: 'Biometrics', sequence: 3, slaDays: 5 },
+  { id: 'mmt-gcc-4', country: 'GCC', code: 'VISA_APPLICATION', label: 'Visa Application', sequence: 4, slaDays: 14 },
+  { id: 'mmt-gcc-5', country: 'GCC', code: 'EMBASSY_INTERVIEW', label: 'Embassy Interview', sequence: 5, slaDays: 10 },
+  { id: 'mmt-gcc-6', country: 'GCC', code: 'TICKETING', label: 'Ticketing', sequence: 6, slaDays: 4 },
+  { id: 'mmt-gcc-7', country: 'GCC', code: 'DEPLOYMENT', label: 'Deployment', sequence: 7, slaDays: 3 },
+
+  { id: 'mmt-ger-1', country: 'Germany', code: 'MEDICAL_EXAMS', label: 'Medical Exams', sequence: 1, slaDays: 10 },
+  { id: 'mmt-ger-2', country: 'Germany', code: 'PCC', label: 'Police Clearance Certificate (PCC)', sequence: 2, slaDays: 14 },
+  { id: 'mmt-ger-3', country: 'Germany', code: 'BIOMETRICS', label: 'Biometrics', sequence: 3, slaDays: 7 },
+  { id: 'mmt-ger-4', country: 'Germany', code: 'VISA_APPLICATION', label: 'Visa Application', sequence: 4, slaDays: 21 },
+  { id: 'mmt-ger-5', country: 'Germany', code: 'EMBASSY_INTERVIEW', label: 'Embassy Interview', sequence: 5, slaDays: 14 },
+  { id: 'mmt-ger-6', country: 'Germany', code: 'TICKETING', label: 'Ticketing', sequence: 6, slaDays: 5 },
+  { id: 'mmt-ger-7', country: 'Germany', code: 'DEPLOYMENT', label: 'Deployment', sequence: 7, slaDays: 3 },
+
+  { id: 'mmt-uk-1', country: 'UK', code: 'MEDICAL_EXAMS', label: 'Medical Exams', sequence: 1, slaDays: 8 },
+  { id: 'mmt-uk-2', country: 'UK', code: 'PCC', label: 'Police Clearance Certificate (PCC)', sequence: 2, slaDays: 12 },
+  { id: 'mmt-uk-3', country: 'UK', code: 'BIOMETRICS', label: 'Biometrics', sequence: 3, slaDays: 6 },
+  { id: 'mmt-uk-4', country: 'UK', code: 'VISA_APPLICATION', label: 'Visa Application', sequence: 4, slaDays: 16 },
+  { id: 'mmt-uk-5', country: 'UK', code: 'EMBASSY_INTERVIEW', label: 'Embassy Interview', sequence: 5, slaDays: 12 },
+  { id: 'mmt-uk-6', country: 'UK', code: 'TICKETING', label: 'Ticketing', sequence: 6, slaDays: 4 },
+  { id: 'mmt-uk-7', country: 'UK', code: 'DEPLOYMENT', label: 'Deployment', sequence: 7, slaDays: 3 },
+
+  { id: 'mmt-usc-1', country: 'USA/Canada', code: 'MEDICAL_EXAMS', label: 'Medical Exams', sequence: 1, slaDays: 9 },
+  { id: 'mmt-usc-2', country: 'USA/Canada', code: 'PCC', label: 'Police Clearance Certificate (PCC)', sequence: 2, slaDays: 12 },
+  { id: 'mmt-usc-3', country: 'USA/Canada', code: 'BIOMETRICS', label: 'Biometrics', sequence: 3, slaDays: 7 },
+  { id: 'mmt-usc-4', country: 'USA/Canada', code: 'VISA_APPLICATION', label: 'Visa Application', sequence: 4, slaDays: 18 },
+  { id: 'mmt-usc-5', country: 'USA/Canada', code: 'EMBASSY_INTERVIEW', label: 'Embassy Interview', sequence: 5, slaDays: 14 },
+  { id: 'mmt-usc-6', country: 'USA/Canada', code: 'TICKETING', label: 'Ticketing', sequence: 6, slaDays: 4 },
+  { id: 'mmt-usc-7', country: 'USA/Canada', code: 'DEPLOYMENT', label: 'Deployment', sequence: 7, slaDays: 3 },
+];
+
+export const candidateMigrationMilestones: CandidateMigrationMilestone[] = [
+  { id: 'cmm-1', candidateId: 'can-1', country: 'Germany', code: 'MEDICAL_EXAMS', status: 'Completed', completedAt: '2026-03-02T09:00:00.000Z', updatedAt: '2026-03-02T09:00:00.000Z', updatedBy: 'ops-1' },
+  { id: 'cmm-2', candidateId: 'can-1', country: 'Germany', code: 'PCC', status: 'Completed', completedAt: '2026-03-07T09:00:00.000Z', updatedAt: '2026-03-07T09:00:00.000Z', updatedBy: 'ops-1' },
+  { id: 'cmm-3', candidateId: 'can-1', country: 'Germany', code: 'BIOMETRICS', status: 'Completed', completedAt: '2026-03-11T09:00:00.000Z', updatedAt: '2026-03-11T09:00:00.000Z', updatedBy: 'ops-1' },
+  { id: 'cmm-4', candidateId: 'can-1', country: 'Germany', code: 'VISA_APPLICATION', status: 'In Progress', dueDate: '2026-03-25T09:00:00.000Z', updatedAt: '2026-03-15T09:00:00.000Z', updatedBy: 'ops-1' },
+  { id: 'cmm-5', candidateId: 'can-1', country: 'Germany', code: 'EMBASSY_INTERVIEW', status: 'Not Started', updatedAt: '2026-03-15T09:00:00.000Z' },
+  { id: 'cmm-6', candidateId: 'can-1', country: 'Germany', code: 'TICKETING', status: 'Not Started', updatedAt: '2026-03-15T09:00:00.000Z' },
+  { id: 'cmm-7', candidateId: 'can-1', country: 'Germany', code: 'DEPLOYMENT', status: 'Not Started', updatedAt: '2026-03-15T09:00:00.000Z' },
+
+  { id: 'cmm-8', candidateId: 'can-2', country: 'GCC', code: 'MEDICAL_EXAMS', status: 'Completed', completedAt: '2026-03-05T09:00:00.000Z', updatedAt: '2026-03-05T09:00:00.000Z', updatedBy: 'ops-2' },
+  { id: 'cmm-9', candidateId: 'can-2', country: 'GCC', code: 'PCC', status: 'Blocked', dueDate: '2026-03-20T09:00:00.000Z', notes: 'Awaiting district authority clearance.', updatedAt: '2026-03-16T09:00:00.000Z', updatedBy: 'ops-2' },
+  { id: 'cmm-10', candidateId: 'can-2', country: 'GCC', code: 'BIOMETRICS', status: 'Not Started', updatedAt: '2026-03-16T09:00:00.000Z' },
+  { id: 'cmm-11', candidateId: 'can-2', country: 'GCC', code: 'VISA_APPLICATION', status: 'Not Started', updatedAt: '2026-03-16T09:00:00.000Z' },
+  { id: 'cmm-12', candidateId: 'can-2', country: 'GCC', code: 'EMBASSY_INTERVIEW', status: 'Not Started', updatedAt: '2026-03-16T09:00:00.000Z' },
+  { id: 'cmm-13', candidateId: 'can-2', country: 'GCC', code: 'TICKETING', status: 'Not Started', updatedAt: '2026-03-16T09:00:00.000Z' },
+  { id: 'cmm-14', candidateId: 'can-2', country: 'GCC', code: 'DEPLOYMENT', status: 'Not Started', updatedAt: '2026-03-16T09:00:00.000Z' },
+
+  { id: 'cmm-15', candidateId: 'can-4', country: 'UK', code: 'MEDICAL_EXAMS', status: 'Completed', completedAt: '2026-03-01T09:00:00.000Z', updatedAt: '2026-03-01T09:00:00.000Z', updatedBy: 'ops-3' },
+  { id: 'cmm-16', candidateId: 'can-4', country: 'UK', code: 'PCC', status: 'Completed', completedAt: '2026-03-04T09:00:00.000Z', updatedAt: '2026-03-04T09:00:00.000Z', updatedBy: 'ops-3' },
+  { id: 'cmm-17', candidateId: 'can-4', country: 'UK', code: 'BIOMETRICS', status: 'In Progress', dueDate: '2026-03-22T09:00:00.000Z', updatedAt: '2026-03-12T09:00:00.000Z', updatedBy: 'ops-3' },
+  { id: 'cmm-18', candidateId: 'can-4', country: 'UK', code: 'VISA_APPLICATION', status: 'Not Started', updatedAt: '2026-03-12T09:00:00.000Z' },
+  { id: 'cmm-19', candidateId: 'can-4', country: 'UK', code: 'EMBASSY_INTERVIEW', status: 'Not Started', updatedAt: '2026-03-12T09:00:00.000Z' },
+  { id: 'cmm-20', candidateId: 'can-4', country: 'UK', code: 'TICKETING', status: 'Not Started', updatedAt: '2026-03-12T09:00:00.000Z' },
+  { id: 'cmm-21', candidateId: 'can-4', country: 'UK', code: 'DEPLOYMENT', status: 'Not Started', updatedAt: '2026-03-12T09:00:00.000Z' },
+];
 
 export const trainingBatches: TrainingBatch[] = [
   {

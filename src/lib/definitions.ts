@@ -252,6 +252,30 @@ export type DunningCase = {
   attemptCount: number;
 };
 
+export type PaymentPlanTrigger =
+  | 'Enrollment'
+  | 'Document Approval'
+  | 'Visa Filed'
+  | 'Offer Accepted'
+  | 'Pre-Departure'
+  | 'Deployment';
+
+export type PaymentPlanInstallment = {
+  id: string;
+  label: string;
+  percent: number;
+  trigger: PaymentPlanTrigger;
+};
+
+export type PaymentPlanTemplate = {
+  id: string;
+  name: string;
+  model: BillingModel;
+  currency: Transaction['currency'];
+  notes?: string;
+  installments: PaymentPlanInstallment[];
+};
+
 export type WorkflowTriggerEvent = 'on_enter' | 'on_exit' | 'on_breach';
 export type WorkflowActionType = 'notify' | 'create_task' | 'update_candidate';
 
@@ -407,6 +431,39 @@ export type CandidateCommunicationEvent = {
   createdBy: string;
 };
 
+export type MigrationCountry = 'GCC' | 'Germany' | 'UK' | 'USA/Canada';
+export type MigrationMilestoneCode =
+  | 'MEDICAL_EXAMS'
+  | 'PCC'
+  | 'BIOMETRICS'
+  | 'VISA_APPLICATION'
+  | 'EMBASSY_INTERVIEW'
+  | 'TICKETING'
+  | 'DEPLOYMENT';
+export type MigrationMilestoneStatus = 'Not Started' | 'In Progress' | 'Completed' | 'Blocked';
+
+export type MigrationMilestoneTemplate = {
+  id: string;
+  country: MigrationCountry;
+  code: MigrationMilestoneCode;
+  label: string;
+  sequence: number;
+  slaDays?: number;
+};
+
+export type CandidateMigrationMilestone = {
+  id: string;
+  candidateId: string;
+  country: MigrationCountry;
+  code: MigrationMilestoneCode;
+  status: MigrationMilestoneStatus;
+  dueDate?: string;
+  completedAt?: string;
+  notes?: string;
+  updatedAt: string;
+  updatedBy?: string;
+};
+
 export type CandidateIdentityProfile = {
   candidateId: string;
   nationality: string;
@@ -429,13 +486,15 @@ export type CandidateLifecycleSnapshot = {
   training: CandidateTrainingEnrollment[];
   payments: CandidatePaymentRecord[];
   communications: CandidateCommunicationEvent[];
+  migrationCountry: MigrationCountry;
+  migrationMilestones: CandidateMigrationMilestone[];
   riskFlags: string[];
 };
 
 export type CandidateTimelineEvent = {
   id: string;
   timestamp: string;
-  type: 'workflow' | 'document' | 'training' | 'payment' | 'communication';
+  type: 'workflow' | 'document' | 'training' | 'payment' | 'communication' | 'migration';
   title: string;
   detail: string;
 };

@@ -9,6 +9,7 @@ import {
   transactions,
   trainingCourses,
 } from "@/lib/data";
+import { getCandidateMigrationCountry, getCandidateMigrationMilestones } from "@/lib/migration-milestones";
 import type {
   CandidateLifecycleSnapshot,
   CandidateTimelineEvent,
@@ -54,6 +55,8 @@ export function getCandidateLifecycleSnapshot(candidateId: string): CandidateLif
   const training = candidateTrainingEnrollments.filter((item) => item.candidateId === candidateId);
   const payments = candidatePaymentRecords.filter((item) => item.candidateId === candidateId);
   const communications = candidateCommunications.filter((item) => item.candidateId === candidateId);
+  const migrationCountry = getCandidateMigrationCountry(candidateId);
+  const migrationMilestones = getCandidateMigrationMilestones(candidateId);
 
   const riskFlags: string[] = [];
   if (slaState === "Breached") {
@@ -64,6 +67,9 @@ export function getCandidateLifecycleSnapshot(candidateId: string): CandidateLif
   }
   if (payments.some((item) => transactions.find((txn) => txn.id === item.transactionId)?.status === "Pending")) {
     riskFlags.push("Pending candidate payment");
+  }
+  if (migrationMilestones.some((item) => item.status === "Blocked")) {
+    riskFlags.push("Blocked migration milestone");
   }
 
   return {
@@ -76,6 +82,8 @@ export function getCandidateLifecycleSnapshot(candidateId: string): CandidateLif
     training,
     payments,
     communications,
+    migrationCountry,
+    migrationMilestones,
     riskFlags,
   };
 }
@@ -129,12 +137,21 @@ export function getCandidateTimeline(candidateId: string): CandidateTimelineEven
     detail: message.summary,
   }));
 
+  const migrationTimeline: CandidateTimelineEvent[] = snapshot.migrationMilestones.map((milestone) => ({
+    id: `timeline-${milestone.id}`,
+    timestamp: milestone.updatedAt,
+    type: "migration",
+    title: `Migration ${milestone.status}`,
+    detail: `${milestone.code} (${snapshot.migrationCountry})`,
+  }));
+
   return [
     ...workflowTimeline,
     ...documentTimeline,
     ...trainingTimeline,
     ...paymentTimeline,
     ...communicationTimeline,
+    ...migrationTimeline,
   ].sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp));
 }
 

@@ -24,7 +24,8 @@ import {
   BookOpenCheck,
   Landmark,
   Workflow,
-  HeartPulse
+  HeartPulse,
+  SlidersHorizontal
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { NexusLogo } from "@/components/icons";
@@ -140,6 +141,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               >
                 <HeartPulse />
                 <span>Candidate Lifecycle</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                href="/admin-config"
+                isActive={pathname.startsWith("/admin-config")}
+                tooltip="Config Studio"
+              >
+                <SlidersHorizontal />
+                <span>Config Studio</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
