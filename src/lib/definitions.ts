@@ -150,3 +150,82 @@ export type WorkflowEvent = {
 };
 
 export type WorkflowSlaState = 'On Track' | 'At Risk' | 'Breached';
+
+export type CandidateDocumentStatus = 'Missing' | 'Submitted' | 'Verified' | 'Rejected';
+
+export type CandidateDocumentRecord = {
+  id: string;
+  candidateId: string;
+  documentName: string;
+  status: CandidateDocumentStatus;
+  url?: string;
+  lastUpdatedAt: string;
+  verifiedBy?: string;
+  notes?: string;
+};
+
+export type CandidateTrainingStatus = 'Not Started' | 'In Progress' | 'Completed' | 'Failed';
+
+export type CandidateTrainingEnrollment = {
+  id: string;
+  candidateId: string;
+  courseId: string;
+  status: CandidateTrainingStatus;
+  progressPercent: number;
+  score?: number;
+  startedAt?: string;
+  completedAt?: string;
+};
+
+export type CandidatePaymentRecord = {
+  id: string;
+  candidateId: string;
+  transactionId: string;
+  category: 'Training' | 'Documentation' | 'Visa' | 'Other';
+  notes?: string;
+};
+
+export type CandidateCommunicationChannel = 'Call' | 'Email' | 'WhatsApp' | 'SMS' | 'Note';
+
+export type CandidateCommunicationEvent = {
+  id: string;
+  candidateId: string;
+  channel: CandidateCommunicationChannel;
+  direction: 'Inbound' | 'Outbound' | 'Internal';
+  summary: string;
+  createdAt: string;
+  createdBy: string;
+};
+
+export type CandidateIdentityProfile = {
+  candidateId: string;
+  nationality: string;
+  passportNumber?: string;
+  dateOfBirth?: string;
+  gender?: string;
+  city?: string;
+  country?: string;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+};
+
+export type CandidateLifecycleSnapshot = {
+  candidate: Candidate;
+  identity?: CandidateIdentityProfile;
+  workflow?: CandidateWorkflowInstance;
+  currentStageLabel?: string;
+  slaState?: WorkflowSlaState;
+  documents: CandidateDocumentRecord[];
+  training: CandidateTrainingEnrollment[];
+  payments: CandidatePaymentRecord[];
+  communications: CandidateCommunicationEvent[];
+  riskFlags: string[];
+};
+
+export type CandidateTimelineEvent = {
+  id: string;
+  timestamp: string;
+  type: 'workflow' | 'document' | 'training' | 'payment' | 'communication';
+  title: string;
+  detail: string;
+};

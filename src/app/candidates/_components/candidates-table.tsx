@@ -12,6 +12,7 @@ import {
     getSlaState,
     getStageByCode,
 } from "@/lib/workflow-engine";
+import Link from "next/link";
 
 type CandidatesTableProps = {
     candidates: Candidate[];
@@ -99,7 +100,9 @@ export function CandidatesTable({ candidates, onEdit }: CandidatesTableProps) {
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
-                                            <DropdownMenuItem>View Profile</DropdownMenuItem>
+                                            <DropdownMenuItem asChild>
+                                                <Link href={`/candidate-lifecycle/${candidate.id}`}>View Profile</Link>
+                                            </DropdownMenuItem>
                                             <DropdownMenuItem onClick={() => onEdit(candidate)}>
                                                 Edit
                                             </DropdownMenuItem>

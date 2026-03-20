@@ -23,7 +23,8 @@ import {
   FileCheck2,
   BookOpenCheck,
   Landmark,
-  Workflow
+  Workflow,
+  HeartPulse
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { NexusLogo } from "@/components/icons";
@@ -129,6 +130,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               >
                 <Workflow />
                 <span>Workflow Engine</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                href="/candidate-lifecycle"
+                isActive={pathname.startsWith("/candidate-lifecycle")}
+                tooltip="Candidate Lifecycle"
+              >
+                <HeartPulse />
+                <span>Candidate Lifecycle</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>

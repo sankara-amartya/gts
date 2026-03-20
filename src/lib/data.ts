@@ -1,4 +1,11 @@
 import type {
+  CandidateCommunicationEvent,
+  CandidateDocumentRecord,
+  CandidateIdentityProfile,
+  CandidateLifecycleSnapshot,
+  CandidatePaymentRecord,
+  CandidateTimelineEvent,
+  CandidateTrainingEnrollment,
   Candidate,
   CandidateWorkflowInstance,
   Client,
@@ -203,3 +210,117 @@ export const workflowEvents: WorkflowEvent[] = [
     createdAt: '2026-03-18T09:00:00.000Z',
   },
 ];
+
+export const candidateIdentityProfiles: CandidateIdentityProfile[] = [
+  {
+    candidateId: 'can-1',
+    nationality: 'Indian',
+    passportNumber: 'P9087654',
+    dateOfBirth: '1995-08-12',
+    gender: 'Male',
+    city: 'Bengaluru',
+    country: 'India',
+    emergencyContactName: 'Mary Doe',
+    emergencyContactPhone: '+91-9000000011',
+  },
+  {
+    candidateId: 'can-2',
+    nationality: 'Indian',
+    passportNumber: 'P8099652',
+    dateOfBirth: '1997-03-21',
+    gender: 'Female',
+    city: 'Kochi',
+    country: 'India',
+    emergencyContactName: 'Anita Smith',
+    emergencyContactPhone: '+91-9000000012',
+  },
+  {
+    candidateId: 'can-4',
+    nationality: 'Indian',
+    passportNumber: 'P7004432',
+    dateOfBirth: '1994-11-02',
+    gender: 'Female',
+    city: 'Pune',
+    country: 'India',
+    emergencyContactName: 'Carlos Garcia',
+    emergencyContactPhone: '+91-9000000014',
+  },
+];
+
+export const candidateDocuments: CandidateDocumentRecord[] = [
+  { id: 'cdr-1', candidateId: 'can-1', documentName: 'Passport', status: 'Verified', url: '#', lastUpdatedAt: '2026-03-11T10:00:00.000Z', verifiedBy: 'ops-1' },
+  { id: 'cdr-2', candidateId: 'can-1', documentName: 'Nursing Degree', status: 'Verified', url: '#', lastUpdatedAt: '2026-03-11T10:10:00.000Z', verifiedBy: 'ops-1' },
+  { id: 'cdr-3', candidateId: 'can-1', documentName: 'B2 Certificate', status: 'Submitted', url: '#', lastUpdatedAt: '2026-03-16T09:00:00.000Z' },
+  { id: 'cdr-4', candidateId: 'can-2', documentName: 'Passport', status: 'Submitted', url: '#', lastUpdatedAt: '2026-03-19T07:30:00.000Z' },
+  { id: 'cdr-5', candidateId: 'can-2', documentName: 'Nursing Degree', status: 'Missing', lastUpdatedAt: '2026-03-19T07:30:00.000Z' },
+  { id: 'cdr-6', candidateId: 'can-4', documentName: 'Passport', status: 'Verified', url: '#', lastUpdatedAt: '2026-03-05T11:30:00.000Z', verifiedBy: 'ops-2' },
+  { id: 'cdr-7', candidateId: 'can-4', documentName: 'Visa Application', status: 'Submitted', url: '#', lastUpdatedAt: '2026-03-12T10:00:00.000Z' },
+];
+
+export const candidateTrainingEnrollments: CandidateTrainingEnrollment[] = [
+  {
+    id: 'cte-1',
+    candidateId: 'can-1',
+    courseId: 'tr-2',
+    status: 'In Progress',
+    progressPercent: 85,
+    score: 79,
+    startedAt: '2026-02-10T08:00:00.000Z',
+  },
+  {
+    id: 'cte-2',
+    candidateId: 'can-2',
+    courseId: 'tr-1',
+    status: 'In Progress',
+    progressPercent: 40,
+    startedAt: '2026-03-01T08:00:00.000Z',
+  },
+  {
+    id: 'cte-3',
+    candidateId: 'can-4',
+    courseId: 'tr-2',
+    status: 'Completed',
+    progressPercent: 100,
+    score: 88,
+    startedAt: '2026-01-01T08:00:00.000Z',
+    completedAt: '2026-02-20T08:00:00.000Z',
+  },
+];
+
+export const candidatePaymentRecords: CandidatePaymentRecord[] = [
+  { id: 'cpr-1', candidateId: 'can-2', transactionId: 'txn-1', category: 'Training', notes: 'A1 language fee paid.' },
+  { id: 'cpr-2', candidateId: 'can-4', transactionId: 'txn-3', category: 'Documentation', notes: 'Verification fee pending.' },
+];
+
+export const candidateCommunications: CandidateCommunicationEvent[] = [
+  {
+    id: 'cce-1',
+    candidateId: 'can-1',
+    channel: 'Call',
+    direction: 'Outbound',
+    summary: 'Discussed B2 exam schedule and interview readiness.',
+    createdAt: '2026-03-17T12:00:00.000Z',
+    createdBy: 'recruiter-1',
+  },
+  {
+    id: 'cce-2',
+    candidateId: 'can-2',
+    channel: 'WhatsApp',
+    direction: 'Outbound',
+    summary: 'Requested degree certificate upload to proceed verification.',
+    createdAt: '2026-03-19T09:00:00.000Z',
+    createdBy: 'ops-1',
+  },
+  {
+    id: 'cce-3',
+    candidateId: 'can-4',
+    channel: 'Email',
+    direction: 'Inbound',
+    summary: 'Shared visa acknowledgement receipt and travel preference.',
+    createdAt: '2026-03-13T15:30:00.000Z',
+    createdBy: 'candidate',
+  },
+];
+
+export const candidateLifecycleSnapshots: CandidateLifecycleSnapshot[] = [];
+export const candidateTimelineEvents: CandidateTimelineEvent[] = [];
