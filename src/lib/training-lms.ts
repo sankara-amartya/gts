@@ -15,9 +15,18 @@ import {
 import type {
   CandidateAssessmentAttempt,
   CandidateAttendanceRecord,
-  CandidateTrainingEnrollment,
-  CertificateRecord,
 } from "@/lib/definitions";
+
+export type GradeScale = {
+  aMin: number;
+  bPlusMin: number;
+  bMin: number;
+};
+
+type GradeAssessmentOptions = {
+  passThreshold?: number;
+  gradeScale?: GradeScale;
+};
 
 function addHours(baseDateIso: string, hours: number): string {
   const date = new Date(baseDateIso);
@@ -96,7 +105,23 @@ export function markAttendance(recordId: string, status: CandidateAttendanceReco
   return record;
 }
 
-export function gradeAssessment(attemptId: string, score: number) {
+function resolveGrade(score: number, gradeScale: GradeScale) {
+  if (score >= gradeScale.aMin) {
+    return "A";
+  }
+
+  if (score >= gradeScale.bPlusMin) {
+    return "B+";
+  }
+
+  if (score >= gradeScale.bMin) {
+    return "B";
+  }
+
+  return "C";
+}
+
+export function gradeAssessment(attemptId: string, score: number, options?: GradeAssessmentOptions) {
   const attempt = candidateAssessmentAttempts.find((item) => item.id === attemptId);
   if (!attempt) {
     return { ok: false as const, error: "Assessment attempt not found." };
@@ -107,8 +132,15 @@ export function gradeAssessment(attemptId: string, score: number) {
     return { ok: false as const, error: "Assessment template not found." };
   }
 
+  const passThreshold = options?.passThreshold ?? template.passingScore;
+  const gradeScale: GradeScale = options?.gradeScale ?? {
+    aMin: 85,
+    bPlusMin: 75,
+    bMin: passThreshold,
+  };
+
   attempt.score = score;
-  attempt.passed = score >= template.passingScore;
+  attempt.passed = score >= passThreshold;
   attempt.gradedBy = "lms-console";
   attempt.attemptedAt = new Date().toISOString();
 
@@ -133,7 +165,7 @@ export function gradeAssessment(attemptId: string, score: number) {
         certificateCode: `GTS-${template.courseId.toUpperCase()}-${Date.now()}`,
         issuedAt: new Date().toISOString(),
         issuedBy: "lms-system",
-        grade: score >= 85 ? "A" : score >= 75 ? "B+" : "B",
+        grade: resolveGrade(score, gradeScale),
       });
     }
   }
