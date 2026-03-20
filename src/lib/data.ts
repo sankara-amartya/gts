@@ -1,4 +1,4 @@
-import type { Client, Mandate, CommercialTerm, ProgressUpdate } from './definitions';
+import type { Client, Mandate, CommercialTerm, ProgressUpdate, Candidate, DocumentPack, TrainingCourse, Transaction } from './definitions';
 
 export const clients: Client[] = [
   { id: 'cli-1', name: 'Innovatech Solutions', industry: 'Technology', contactName: 'Alex Chen', contactEmail: 'alex.c@innovatech.com', contactPhone: '123-456-7890', createdAt: '2023-01-15' },
@@ -36,6 +36,36 @@ export const progressUpdates: ProgressUpdate[] = [
     { id: 'upd-6', mandateId: 'man-3', updateText: '2 offers accepted. Continuing to source for remaining 3 positions.', createdAt: '2023-06-20' },
 ];
 
-export const mandateStages: Mandate['stage'][] = ['Sourcing', 'Interviewing', 'Offer', 'Closed'];
+export const candidates: Candidate[] = [
+    { id: 'can-1', name: 'John Doe', email: 'john.doe@email.com', phone: '111-222-3333', mandateId: 'man-1', status: 'Interviewing', migrationStatus: 'Visa processing', createdAt: '2023-06-01' },
+    { id: 'can-2', name: 'Jane Smith', email: 'jane.smith@email.com', phone: '444-555-6666', mandateId: 'man-1', status: 'Training', migrationStatus: 'Awaiting documents', createdAt: '2023-06-05' },
+    { id: 'can-3', name: 'Peter Jones', email: 'peter.jones@email.com', phone: '777-888-9999', mandateId: 'man-2', status: 'Screening', migrationStatus: 'Not started', createdAt: '2023-06-10' },
+    { id: 'can-4', name: 'Maria Garcia', email: 'maria.g@email.com', phone: '123-987-4561', mandateId: 'man-5', status: 'Documentation', migrationStatus: 'Documents submitted', createdAt: '2023-06-15' },
+];
 
+export const documentPacks: DocumentPack[] = [
+    { id: 'dp-1', name: 'Germany - Registered Nurse Pack', country: 'Germany', role: 'Registered Nurse', documentList: ['Passport', 'Visa Application', 'B2 German Certificate', 'Degree Certificate'] },
+    { id: 'dp-2', name: 'Canada - Software Developer Pack', country: 'Canada', role: 'Software Developer', documentList: ['Passport', 'Work Permit Application', 'IELTS Score', 'Educational Credential Assessment'] },
+    { id: 'dp-3', name: 'New Zealand - General Pack', country: 'New Zealand', role: 'Any', documentList: ['Passport', 'Visa', 'Medical Certificate'] },
+];
+
+export const trainingCourses: TrainingCourse[] = [
+    { id: 'tr-1', title: 'German Language A1', category: 'Language', level: 'A1', duration: '8 Weeks' },
+    { id: 'tr-2', title: 'German Language B2', category: 'Language', level: 'B2', duration: '12 Weeks' },
+    { id: 'tr-3', title: 'IELTS Preparation', category: 'Language', level: 'Advanced', duration: '6 Weeks' },
+    { id: 'tr-4', title: 'Certified Nursing Assistant (CNA)', category: 'Technical', level: 'Beginner', duration: '10 Weeks' },
+];
+
+export const transactions: Transaction[] = [
+    { id: 'txn-1', amount: 500, currency: 'EUR', payerType: 'Candidate', payerId: 'can-2', description: 'German A1 Course Fee', status: 'Paid', createdAt: '2023-06-06' },
+    { id: 'txn-2', amount: 2500, currency: 'USD', payerType: 'Employer', payerId: 'cli-1', description: 'First tranche for man-1', status: 'Paid', createdAt: '2023-06-02' },
+    { id: 'txn-3', amount: 150, currency: 'CAD', payerType: 'Candidate', payerId: 'can-4', description: 'Document Verification Fee', status: 'Pending', createdAt: '2023-06-16' },
+    { id: 'txn-4', amount: 5000, currency: 'NZD', payerType: 'Employer', payerId: 'cli-3', description: 'Placement fee for RN', status: 'Paid', createdAt: '2023-05-20' },
+];
+
+export const mandateStages: Mandate['stage'][] = ['Sourcing', 'Interviewing', 'Offer', 'Closed'];
 export const clientIndustries: Client['industry'][] = ['Technology', 'Finance', 'Healthcare', 'Retail', 'Manufacturing'];
+export const candidateStatuses: Candidate['status'][] = ['Screening', 'Training', 'Documentation', 'Ready for Deployment', 'Deployed'];
+export const trainingCategories: TrainingCourse['category'][] = ['Language', 'Technical'];
+export const transactionStatuses: Transaction['status'][] = ['Pending', 'Paid', 'Failed', 'Refunded'];
+export const transactionCurrencies: Transaction['currency'][] = ['INR', 'EUR', 'CAD', 'NZD', 'USD', 'QAR'];

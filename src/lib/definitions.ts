@@ -33,3 +33,46 @@ export type ProgressUpdate = {
   updateText: string;
   createdAt: string;
 };
+
+export type CandidateStatus = 'Screening' | 'Training' | 'Documentation' | 'Ready for Deployment' | 'Deployed';
+
+export type Candidate = {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    mandateId: string;
+    status: CandidateStatus;
+    migrationStatus: string;
+    createdAt: string;
+}
+
+export type DocumentPack = {
+    id: string;
+    name: string;
+    country: string;
+    role: string;
+    documentList: string[];
+}
+
+export type TrainingCourse = {
+    id: string;
+    title: string;
+    category: 'Language' | 'Technical';
+    level: string;
+    duration: string;
+}
+
+export type TransactionStatus = 'Pending' | 'Paid' | 'Failed' | 'Refunded';
+export type TransactionPayer = 'Candidate' | 'Employer';
+
+export type Transaction = {
+    id: string;
+    amount: number;
+    currency: 'INR' | 'EUR' | 'CAD' | 'NZD' | 'USD' | 'QAR';
+    payerType: TransactionPayer;
+    payerId: string;
+    description: string;
+    status: TransactionStatus;
+    createdAt: string;
+}

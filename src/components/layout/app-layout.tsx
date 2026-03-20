@@ -19,6 +19,10 @@ import {
   FileText,
   LogOut,
   Settings,
+  UserCheck,
+  FileCheck2,
+  BookOpenCheck,
+  Landmark
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { NexusLogo } from "@/components/icons";
@@ -74,6 +78,46 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               >
                 <BriefcaseBusiness />
                 <span>Mandates</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                href="/candidates"
+                isActive={pathname.startsWith("/candidates")}
+                tooltip="Candidates"
+              >
+                <UserCheck />
+                <span>Candidates</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                href="/documents"
+                isActive={pathname.startsWith("/documents")}
+                tooltip="Documents"
+              >
+                <FileCheck2 />
+                <span>Documents</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                href="/training"
+                isActive={pathname.startsWith("/training")}
+                tooltip="Training"
+              >
+                <BookOpenCheck />
+                <span>Training</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                href="/finance"
+                isActive={pathname.startsWith("/finance")}
+                tooltip="Finance"
+              >
+                <Landmark />
+                <span>Finance</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
