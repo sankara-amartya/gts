@@ -67,6 +67,66 @@ export type TrainingCourse = {
     duration: string;
 }
 
+export type TrainingBatch = {
+  id: string;
+  courseId: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  trainer: string;
+};
+
+export type TrainingSession = {
+  id: string;
+  batchId: string;
+  title: string;
+  scheduledAt: string;
+  durationMinutes: number;
+};
+
+export type AttendanceStatus = 'Present' | 'Absent' | 'Late';
+
+export type CandidateAttendanceRecord = {
+  id: string;
+  candidateId: string;
+  sessionId: string;
+  status: AttendanceStatus;
+  markedBy: string;
+  markedAt: string;
+};
+
+export type AssessmentType = 'Language' | 'Technical' | 'Aptitude';
+
+export type AssessmentTemplate = {
+  id: string;
+  courseId: string;
+  name: string;
+  type: AssessmentType;
+  passingScore: number;
+  maxScore: number;
+};
+
+export type CandidateAssessmentAttempt = {
+  id: string;
+  candidateId: string;
+  templateId: string;
+  attemptNo: number;
+  score: number;
+  passed: boolean;
+  attemptedAt: string;
+  gradedBy: string;
+};
+
+export type CertificateRecord = {
+  id: string;
+  candidateId: string;
+  courseId: string;
+  certificateCode: string;
+  issuedAt: string;
+  issuedBy: string;
+  grade?: string;
+};
+
 export type TransactionStatus = 'Pending' | 'Paid' | 'Failed' | 'Refunded';
 export type TransactionPayer = 'Candidate' | 'Employer';
 

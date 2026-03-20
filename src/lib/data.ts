@@ -1,5 +1,9 @@
 import type {
+  AssessmentTemplate,
+  CandidateAssessmentAttempt,
+  CandidateAttendanceRecord,
   ComplianceAuditEvent,
+  CertificateRecord,
   CandidateCommunicationEvent,
   CandidateDocumentRecord,
   CandidateIdentityProfile,
@@ -8,6 +12,8 @@ import type {
   CandidateTimelineEvent,
   CandidateTrainingEnrollment,
   DocumentVerificationQueueItem,
+  TrainingBatch,
+  TrainingSession,
   Candidate,
   CandidateWorkflowInstance,
   Client,
@@ -403,3 +409,71 @@ export const candidateCommunications: CandidateCommunicationEvent[] = [
 
 export const candidateLifecycleSnapshots: CandidateLifecycleSnapshot[] = [];
 export const candidateTimelineEvents: CandidateTimelineEvent[] = [];
+
+export const trainingBatches: TrainingBatch[] = [
+  {
+    id: 'tb-1',
+    courseId: 'tr-1',
+    name: 'German A1 - March Cohort',
+    startDate: '2026-03-01',
+    endDate: '2026-04-30',
+    trainer: 'Anna Muller',
+  },
+  {
+    id: 'tb-2',
+    courseId: 'tr-2',
+    name: 'German B2 - Intensive',
+    startDate: '2026-02-01',
+    endDate: '2026-05-15',
+    trainer: 'Stefan Weber',
+  },
+  {
+    id: 'tb-3',
+    courseId: 'tr-3',
+    name: 'IELTS Prep - Weekend',
+    startDate: '2026-03-08',
+    endDate: '2026-04-26',
+    trainer: 'Liam Patel',
+  },
+];
+
+export const trainingSessions: TrainingSession[] = [
+  { id: 'ts-1', batchId: 'tb-1', title: 'A1 Grammar Basics', scheduledAt: '2026-03-10T09:00:00.000Z', durationMinutes: 120 },
+  { id: 'ts-2', batchId: 'tb-1', title: 'A1 Speaking Practice', scheduledAt: '2026-03-12T09:00:00.000Z', durationMinutes: 120 },
+  { id: 'ts-3', batchId: 'tb-2', title: 'B2 Mock Test', scheduledAt: '2026-03-14T09:00:00.000Z', durationMinutes: 150 },
+  { id: 'ts-4', batchId: 'tb-2', title: 'B2 Listening Workshop', scheduledAt: '2026-03-17T09:00:00.000Z', durationMinutes: 120 },
+  { id: 'ts-5', batchId: 'tb-3', title: 'IELTS Writing Task 2', scheduledAt: '2026-03-16T11:00:00.000Z', durationMinutes: 120 },
+];
+
+export const candidateAttendanceRecords: CandidateAttendanceRecord[] = [
+  { id: 'car-1', candidateId: 'can-2', sessionId: 'ts-1', status: 'Present', markedBy: 'trainer-anna', markedAt: '2026-03-10T11:30:00.000Z' },
+  { id: 'car-2', candidateId: 'can-2', sessionId: 'ts-2', status: 'Late', markedBy: 'trainer-anna', markedAt: '2026-03-12T11:30:00.000Z' },
+  { id: 'car-3', candidateId: 'can-1', sessionId: 'ts-3', status: 'Present', markedBy: 'trainer-stefan', markedAt: '2026-03-14T12:00:00.000Z' },
+  { id: 'car-4', candidateId: 'can-1', sessionId: 'ts-4', status: 'Present', markedBy: 'trainer-stefan', markedAt: '2026-03-17T11:00:00.000Z' },
+  { id: 'car-5', candidateId: 'can-4', sessionId: 'ts-5', status: 'Absent', markedBy: 'trainer-liam', markedAt: '2026-03-16T13:00:00.000Z' },
+];
+
+export const assessmentTemplates: AssessmentTemplate[] = [
+  { id: 'asmt-1', courseId: 'tr-1', name: 'A1 Final Assessment', type: 'Language', passingScore: 60, maxScore: 100 },
+  { id: 'asmt-2', courseId: 'tr-2', name: 'B2 Final Assessment', type: 'Language', passingScore: 70, maxScore: 100 },
+  { id: 'asmt-3', courseId: 'tr-3', name: 'IELTS Mock Exam', type: 'Language', passingScore: 65, maxScore: 100 },
+  { id: 'asmt-4', courseId: 'tr-4', name: 'CNA Skill Check', type: 'Technical', passingScore: 75, maxScore: 100 },
+];
+
+export const candidateAssessmentAttempts: CandidateAssessmentAttempt[] = [
+  { id: 'caa-1', candidateId: 'can-2', templateId: 'asmt-1', attemptNo: 1, score: 68, passed: true, attemptedAt: '2026-03-18T10:00:00.000Z', gradedBy: 'trainer-anna' },
+  { id: 'caa-2', candidateId: 'can-1', templateId: 'asmt-2', attemptNo: 1, score: 72, passed: true, attemptedAt: '2026-03-19T10:00:00.000Z', gradedBy: 'trainer-stefan' },
+  { id: 'caa-3', candidateId: 'can-4', templateId: 'asmt-3', attemptNo: 1, score: 59, passed: false, attemptedAt: '2026-03-19T13:00:00.000Z', gradedBy: 'trainer-liam' },
+];
+
+export const certificateRecords: CertificateRecord[] = [
+  {
+    id: 'cert-1',
+    candidateId: 'can-1',
+    courseId: 'tr-2',
+    certificateCode: 'GTS-B2-2026-0001',
+    issuedAt: '2026-03-20T08:00:00.000Z',
+    issuedBy: 'lms-system',
+    grade: 'B+',
+  },
+];
