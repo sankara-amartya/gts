@@ -1,3 +1,16 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "nexus-logo",
+      "description": "Nexus Mandate logo",
+      "imageUrl": "https://picsum.photos/seed/1/120/32",
+      "imageHint": "logo abstract"
+    },
+    {
+      "id": "user-avatar",
+      "description": "User avatar",
+      "imageUrl": "https://picsum.photos/seed/avatar/40/40",
+      "imageHint": "person face"
+    }
+  ]
 }
