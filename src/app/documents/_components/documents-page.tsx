@@ -19,8 +19,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { VerificationQueueTable } from './verification-queue-table';
 import { ExpiryTrackerTable } from './expiry-tracker-table';
 import { ComplianceAuditTable } from './compliance-audit-table';
+import { ComplianceMatrixTable } from './compliance-matrix-table';
 import { useToast } from '@/hooks/use-toast';
-import { getCandidateComplianceStatus } from '@/lib/documents-compliance';
+import {
+    getCandidateComplianceStatus,
+    getComplianceMatrixByCandidate,
+    syncWorkflowAutoUnlock,
+} from '@/lib/documents-compliance';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export function DocumentsPage() {
     const { toast } = useToast();
@@ -30,6 +36,10 @@ export function DocumentsPage() {
     const [queueItems, setQueueItems] = useState<DocumentVerificationQueueItem[]>(documentVerificationQueue);
     const [candidateDocuments, setCandidateDocuments] = useState<CandidateDocumentRecord[]>(seededCandidateDocuments ?? []);
     const [auditEvents, setAuditEvents] = useState<ComplianceAuditEvent[]>(complianceAuditEvents);
+    const [countryFilter, setCountryFilter] = useState('all');
+    const [roleFilter, setRoleFilter] = useState('all');
+    const [priorityFilter, setPriorityFilter] = useState('all');
+    const [statusFilter, setStatusFilter] = useState('all');
 
     const filteredPacks = useMemo(() => {
         return allDocumentPacks.filter(pack =>
@@ -52,24 +62,49 @@ export function DocumentsPage() {
         };
     }, [candidateDocuments]);
 
+    const availableCountries = useMemo(() => {
+        return Array.from(new Set(allDocumentPacks.map((pack) => pack.country))).sort();
+    }, []);
+
+    const availableRoles = useMemo(() => {
+        return Array.from(new Set(allDocumentPacks.map((pack) => pack.role))).sort();
+    }, []);
+
     const queueFilteredBySearch = useMemo(() => {
         if (!search.trim()) {
-            return queueItems;
+            return queueItems.filter((item) => {
+                const pack = allDocumentPacks.find((docPack) => docPack.id === item.packId);
+                return (
+                    (countryFilter === 'all' || pack?.country === countryFilter) &&
+                    (roleFilter === 'all' || pack?.role === roleFilter) &&
+                    (priorityFilter === 'all' || item.priority === priorityFilter) &&
+                    (statusFilter === 'all' || item.queueStatus === statusFilter)
+                );
+            });
         }
 
         return queueItems.filter((item) => {
             const candidateName = candidates.find((candidate) => candidate.id === item.candidateId)?.name ?? '';
             const documentName = (candidateDocuments ?? []).find((document) => document.id === item.documentId)?.documentName ?? '';
+            const pack = allDocumentPacks.find((docPack) => docPack.id === item.packId);
 
             return (
-                candidateName.toLowerCase().includes(search.toLowerCase()) ||
-                documentName.toLowerCase().includes(search.toLowerCase())
+                (candidateName.toLowerCase().includes(search.toLowerCase()) ||
+                    documentName.toLowerCase().includes(search.toLowerCase())) &&
+                (countryFilter === 'all' || pack?.country === countryFilter) &&
+                (roleFilter === 'all' || pack?.role === roleFilter) &&
+                (priorityFilter === 'all' || item.priority === priorityFilter) &&
+                (statusFilter === 'all' || item.queueStatus === statusFilter)
             );
         });
-    }, [search, queueItems, candidateDocuments]);
+    }, [search, queueItems, candidateDocuments, countryFilter, roleFilter, priorityFilter, statusFilter]);
 
     const documentsWithExpiry = useMemo(() => {
         return (candidateDocuments ?? []).filter((document) => Boolean(document.expiryDate));
+    }, [candidateDocuments]);
+
+    const complianceMatrixRows = useMemo(() => {
+        return getComplianceMatrixByCandidate(candidates, candidateDocuments, allDocumentPacks);
     }, [candidateDocuments]);
 
     const addAuditEvent = (event: Omit<ComplianceAuditEvent, 'id' | 'timestamp'>) => {
@@ -104,19 +139,24 @@ export function DocumentsPage() {
             )
         );
 
-        setCandidateDocuments((current) =>
-            current.map((document) =>
+        let updatedDocuments: CandidateDocumentRecord[] = [];
+        setCandidateDocuments((current) => {
+            updatedDocuments = current.map((document) =>
                 document.id === queueItem.documentId
                     ? {
                           ...document,
                           status: newDocumentStatus,
+                          complianceStatus: approved ? 'Compliant' : 'Non-Compliant',
                           verifiedBy: approved ? 'compliance-console' : document.verifiedBy,
                           verifiedAt: approved ? now : document.verifiedAt,
                           lastUpdatedAt: now,
                       }
                     : document
-            )
-        );
+            );
+            return updatedDocuments;
+        });
+
+        const workflowMove = syncWorkflowAutoUnlock(queueItem.candidateId, updatedDocuments);
 
         addAuditEvent({
             candidateId: queueItem.candidateId,
@@ -130,7 +170,9 @@ export function DocumentsPage() {
 
         toast({
             title: approved ? 'Document approved' : 'Document rejected',
-            description: 'Verification queue and compliance audit updated.',
+            description: workflowMove
+                ? `Verification updated and workflow auto-unlocked: ${workflowMove.from} -> ${workflowMove.to}.`
+                : 'Verification queue and compliance audit updated.',
             variant: approved ? 'default' : 'destructive',
         });
     };
@@ -174,6 +216,53 @@ export function DocumentsPage() {
         });
     };
 
+    const handleExportAuditCsv = () => {
+        const header = [
+            'Timestamp',
+            'Candidate',
+            'Document',
+            'Action',
+            'Actor',
+            'Old Value',
+            'New Value',
+            'Notes',
+        ];
+
+        const rows = auditEvents.map((event) => {
+            const candidateName = candidates.find((candidate) => candidate.id === event.candidateId)?.name ?? 'Unknown';
+            const documentName = candidateDocuments.find((document) => document.id === event.documentId)?.documentName ?? 'Unknown';
+            return [
+                event.timestamp,
+                candidateName,
+                documentName,
+                event.action,
+                event.actor,
+                event.oldValue ?? '',
+                event.newValue ?? '',
+                event.notes ?? '',
+            ];
+        });
+
+        const csv = [header, ...rows]
+            .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+            .join('\n');
+
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `compliance-audit-${new Date().toISOString().slice(0, 10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        toast({
+            title: 'Audit report exported',
+            description: 'CSV file has been downloaded.',
+        });
+    };
+
     const handleEdit = (pack: DocumentPack) => {
         setSelectedPack(pack);
         setDialogOpen(true);
@@ -207,6 +296,54 @@ export function DocumentsPage() {
                 </Button>
             </PageHeader>
 
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
+                <Select value={countryFilter} onValueChange={setCountryFilter}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Filter by country" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">All Countries</SelectItem>
+                        {availableCountries.map((country) => (
+                            <SelectItem key={country} value={country}>{country}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <Select value={roleFilter} onValueChange={setRoleFilter}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Filter by role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">All Roles</SelectItem>
+                        {availableRoles.map((role) => (
+                            <SelectItem key={role} value={role}>{role}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Filter by priority" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">All Priorities</SelectItem>
+                        <SelectItem value="High">High</SelectItem>
+                        <SelectItem value="Medium">Medium</SelectItem>
+                        <SelectItem value="Low">Low</SelectItem>
+                    </SelectContent>
+                </Select>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Filter by status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">All Statuses</SelectItem>
+                        <SelectItem value="Pending Review">Pending Review</SelectItem>
+                        <SelectItem value="In Review">In Review</SelectItem>
+                        <SelectItem value="Approved">Approved</SelectItem>
+                        <SelectItem value="Rejected">Rejected</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
+
             <div className="grid gap-4 sm:grid-cols-3">
                 <div className="rounded-lg border bg-card p-4">
                     <p className="text-sm text-muted-foreground">Compliant Candidates</p>
@@ -223,11 +360,12 @@ export function DocumentsPage() {
             </div>
 
             <Tabs defaultValue="packs" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
+                <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5">
                     <TabsTrigger value="packs">Document Packs</TabsTrigger>
                     <TabsTrigger value="queue">Verification Queue</TabsTrigger>
                     <TabsTrigger value="expiry">Expiry Tracker</TabsTrigger>
                     <TabsTrigger value="audit">Compliance Audit</TabsTrigger>
+                    <TabsTrigger value="matrix">Pack Matrix</TabsTrigger>
                 </TabsList>
                 <TabsContent value="packs">
                     <DocumentsTable packs={filteredPacks} onEdit={handleEdit} />
@@ -250,11 +388,17 @@ export function DocumentsPage() {
                     />
                 </TabsContent>
                 <TabsContent value="audit">
+                    <div className="mb-4 flex justify-end">
+                        <Button variant="outline" onClick={handleExportAuditCsv}>Export CSV</Button>
+                    </div>
                     <ComplianceAuditTable
                         events={auditEvents}
                         candidates={candidates}
                         documents={candidateDocuments}
                     />
+                </TabsContent>
+                <TabsContent value="matrix">
+                    <ComplianceMatrixTable rows={complianceMatrixRows} />
                 </TabsContent>
             </Tabs>
 
