@@ -80,3 +80,73 @@ export type Transaction = {
     status: TransactionStatus;
     createdAt: string;
 }
+
+export type WorkflowTriggerEvent = 'on_enter' | 'on_exit' | 'on_breach';
+export type WorkflowActionType = 'notify' | 'create_task' | 'update_candidate';
+
+export type WorkflowTemplate = {
+  id: string;
+  name: string;
+  country: string;
+  role: string;
+  description?: string;
+  version: number;
+  isActive: boolean;
+};
+
+export type WorkflowStage = {
+  id: string;
+  workflowTemplateId: string;
+  code: string;
+  label: string;
+  sequence: number;
+  slaHours: number;
+};
+
+export type WorkflowCondition = {
+  field: 'languageLevel' | 'migrationStatus' | 'status';
+  operator: 'equals' | 'in';
+  value: string | string[];
+};
+
+export type WorkflowTransition = {
+  id: string;
+  workflowTemplateId: string;
+  fromStageCode: string;
+  toStageCode: string;
+  label: string;
+  actorRole: 'ops' | 'recruiter' | 'trainer' | 'admin';
+  conditions: WorkflowCondition[];
+};
+
+export type WorkflowTrigger = {
+  id: string;
+  workflowTemplateId: string;
+  stageCode: string;
+  eventType: WorkflowTriggerEvent;
+  actionType: WorkflowActionType;
+  actionConfig: {
+    title: string;
+    message: string;
+  };
+};
+
+export type CandidateWorkflowInstance = {
+  id: string;
+  candidateId: string;
+  workflowTemplateId: string;
+  currentStageCode: string;
+  stageEnteredAt: string;
+  stageDueAt: string;
+};
+
+export type WorkflowEvent = {
+  id: string;
+  instanceId: string;
+  eventType: 'transition' | 'trigger';
+  actorId: string;
+  payload: Record<string, string>;
+  createdAt: string;
+};
+
+export type WorkflowSlaState = 'On Track' | 'At Risk' | 'Breached';

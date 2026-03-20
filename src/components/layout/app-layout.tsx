@@ -22,7 +22,8 @@ import {
   UserCheck,
   FileCheck2,
   BookOpenCheck,
-  Landmark
+  Landmark,
+  Workflow
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { NexusLogo } from "@/components/icons";
@@ -118,6 +119,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               >
                 <Landmark />
                 <span>Finance</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                href="/workflows"
+                isActive={pathname.startsWith("/workflows")}
+                tooltip="Workflow Engine"
+              >
+                <Workflow />
+                <span>Workflow Engine</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>

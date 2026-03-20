@@ -7,6 +7,11 @@ import { Candidate } from "@/lib/definitions";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { mandates } from "@/lib/data";
+import {
+    getCandidateWorkflowInstance,
+    getSlaState,
+    getStageByCode,
+} from "@/lib/workflow-engine";
 
 type CandidatesTableProps = {
     candidates: Candidate[];
@@ -31,6 +36,8 @@ export function CandidatesTable({ candidates, onEdit }: CandidatesTableProps) {
                             <TableHead>Candidate</TableHead>
                             <TableHead>Mandate</TableHead>
                             <TableHead>Status</TableHead>
+                            <TableHead>Workflow Stage</TableHead>
+                            <TableHead>SLA</TableHead>
                             <TableHead>Language Level</TableHead>
                             <TableHead>Migration Status</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
@@ -57,6 +64,30 @@ export function CandidatesTable({ candidates, onEdit }: CandidatesTableProps) {
                                     <Badge variant="secondary">{candidate.status}</Badge>
                                 </TableCell>
                                 <TableCell>
+                                    <Badge variant="outline">
+                                        {(() => {
+                                            const instance = getCandidateWorkflowInstance(candidate.id);
+                                            if (!instance) {
+                                                return 'Not Assigned';
+                                            }
+
+                                            return getStageByCode(instance.workflowTemplateId, instance.currentStageCode)?.label ?? instance.currentStageCode;
+                                        })()}
+                                    </Badge>
+                                </TableCell>
+                                <TableCell>
+                                    {(() => {
+                                        const instance = getCandidateWorkflowInstance(candidate.id);
+                                        if (!instance) {
+                                            return <span className="text-muted-foreground">N/A</span>;
+                                        }
+
+                                        const sla = getSlaState(instance);
+                                        const variant = sla === 'Breached' ? 'destructive' : sla === 'At Risk' ? 'outline' : 'secondary';
+                                        return <Badge variant={variant}>{sla}</Badge>;
+                                    })()}
+                                </TableCell>
+                                <TableCell>
                                     <Badge variant="outline">{candidate.languageLevel || 'N/A'}</Badge>
                                 </TableCell>
                                 <TableCell className="text-muted-foreground">{candidate.migrationStatus}</TableCell>
@@ -79,7 +110,7 @@ export function CandidatesTable({ candidates, onEdit }: CandidatesTableProps) {
                             </TableRow>
                         )) : (
                             <TableRow>
-                                <TableCell colSpan={6} className="text-center">No candidates found.</TableCell>
+                                <TableCell colSpan={8} className="text-center">No candidates found.</TableCell>
                             </TableRow>
                         )}
                     </TableBody>

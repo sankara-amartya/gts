@@ -1,4 +1,19 @@
-import type { Client, Mandate, CommercialTerm, ProgressUpdate, Candidate, DocumentPack, TrainingCourse, Transaction } from './definitions';
+import type {
+  Candidate,
+  CandidateWorkflowInstance,
+  Client,
+  CommercialTerm,
+  DocumentPack,
+  Mandate,
+  ProgressUpdate,
+  TrainingCourse,
+  Transaction,
+  WorkflowEvent,
+  WorkflowStage,
+  WorkflowTemplate,
+  WorkflowTransition,
+  WorkflowTrigger,
+} from './definitions';
 
 export const clients: Client[] = [
   { id: 'cli-1', name: 'Innovatech Solutions', industry: 'Technology', contactName: 'Alex Chen', contactEmail: 'alex.c@innovatech.com', contactPhone: '123-456-7890', createdAt: '2023-01-15' },
@@ -37,7 +52,7 @@ export const progressUpdates: ProgressUpdate[] = [
 ];
 
 export const candidates: Candidate[] = [
-    { id: 'can-1', name: 'John Doe', email: 'john.doe@email.com', phone: '111-222-3333', mandateId: 'man-1', status: 'Interviewing', migrationStatus: 'Visa processing', createdAt: '2023-06-01', knackId: 'k_jd_01', languageLevel: 'B2', cvUrl: '#', languageCertificateUrl: '#' },
+  { id: 'can-1', name: 'John Doe', email: 'john.doe@email.com', phone: '111-222-3333', mandateId: 'man-1', status: 'Screening', migrationStatus: 'Visa processing', createdAt: '2023-06-01', knackId: 'k_jd_01', languageLevel: 'B2', cvUrl: '#', languageCertificateUrl: '#' },
     { id: 'can-2', name: 'Jane Smith', email: 'jane.smith@email.com', phone: '444-555-6666', mandateId: 'man-1', status: 'Training', migrationStatus: 'Awaiting documents', createdAt: '2023-06-05', knackId: 'k_js_02', languageLevel: 'A2', cvUrl: '#', languageCertificateUrl: '#' },
     { id: 'can-3', name: 'Peter Jones', email: 'peter.jones@email.com', phone: '777-888-9999', mandateId: 'man-2', status: 'Screening', migrationStatus: 'Not started', createdAt: '2023-06-10', knackId: 'k_pj_03', languageLevel: 'C1' },
     { id: 'can-4', name: 'Maria Garcia', email: 'maria.g@email.com', phone: '123-987-4561', mandateId: 'man-5', status: 'Documentation', migrationStatus: 'Documents submitted', createdAt: '2023-06-15', knackId: 'k_mg_04', languageLevel: 'B1', cvUrl: '#' },
@@ -69,3 +84,122 @@ export const candidateStatuses: Candidate['status'][] = ['Screening', 'Training'
 export const trainingCategories: TrainingCourse['category'][] = ['Language', 'Technical'];
 export const transactionStatuses: Transaction['status'][] = ['Pending', 'Paid', 'Failed', 'Refunded'];
 export const transactionCurrencies: Transaction['currency'][] = ['INR', 'EUR', 'CAD', 'NZD', 'USD', 'QAR'];
+
+export const workflowTemplates: WorkflowTemplate[] = [
+  {
+    id: 'wf-germany-nurse-v1',
+    name: 'Germany Nurse Journey',
+    country: 'Germany',
+    role: 'Registered Nurse',
+    description: '12-stage migration and deployment journey from onboarding to ready to fly.',
+    version: 1,
+    isActive: true,
+  },
+];
+
+export const workflowStages: WorkflowStage[] = [
+  { id: 'wfs-1', workflowTemplateId: 'wf-germany-nurse-v1', code: 'DOC_COLLECTION', label: 'Document Collection', sequence: 1, slaHours: 72 },
+  { id: 'wfs-2', workflowTemplateId: 'wf-germany-nurse-v1', code: 'DOC_VERIFICATION', label: 'Document Verification', sequence: 2, slaHours: 48 },
+  { id: 'wfs-3', workflowTemplateId: 'wf-germany-nurse-v1', code: 'PROFILE_APPROVAL', label: 'Profile Approval', sequence: 3, slaHours: 48 },
+  { id: 'wfs-4', workflowTemplateId: 'wf-germany-nurse-v1', code: 'LANGUAGE_A1', label: 'German A1 Training', sequence: 4, slaHours: 240 },
+  { id: 'wfs-5', workflowTemplateId: 'wf-germany-nurse-v1', code: 'LANGUAGE_A2', label: 'German A2 Training', sequence: 5, slaHours: 240 },
+  { id: 'wfs-6', workflowTemplateId: 'wf-germany-nurse-v1', code: 'LANGUAGE_B1', label: 'German B1 Training', sequence: 6, slaHours: 336 },
+  { id: 'wfs-7', workflowTemplateId: 'wf-germany-nurse-v1', code: 'LANGUAGE_B2', label: 'German B2 Certification', sequence: 7, slaHours: 336 },
+  { id: 'wfs-8', workflowTemplateId: 'wf-germany-nurse-v1', code: 'INTERVIEW', label: 'Employer Interview', sequence: 8, slaHours: 96 },
+  { id: 'wfs-9', workflowTemplateId: 'wf-germany-nurse-v1', code: 'OFFER', label: 'Offer & Acceptance', sequence: 9, slaHours: 72 },
+  { id: 'wfs-10', workflowTemplateId: 'wf-germany-nurse-v1', code: 'VISA_FILING', label: 'Visa Filing', sequence: 10, slaHours: 168 },
+  { id: 'wfs-11', workflowTemplateId: 'wf-germany-nurse-v1', code: 'PRE_DEPARTURE', label: 'Pre-Departure Compliance', sequence: 11, slaHours: 120 },
+  { id: 'wfs-12', workflowTemplateId: 'wf-germany-nurse-v1', code: 'READY_TO_FLY', label: 'Ready to Fly', sequence: 12, slaHours: 24 },
+];
+
+export const workflowTransitions: WorkflowTransition[] = [
+  { id: 'wft-1', workflowTemplateId: 'wf-germany-nurse-v1', fromStageCode: 'DOC_COLLECTION', toStageCode: 'DOC_VERIFICATION', label: 'Submit docs for verification', actorRole: 'ops', conditions: [] },
+  { id: 'wft-2', workflowTemplateId: 'wf-germany-nurse-v1', fromStageCode: 'DOC_VERIFICATION', toStageCode: 'PROFILE_APPROVAL', label: 'Approve verified profile', actorRole: 'ops', conditions: [{ field: 'migrationStatus', operator: 'in', value: ['Documents submitted', 'Visa processing'] }] },
+  { id: 'wft-3', workflowTemplateId: 'wf-germany-nurse-v1', fromStageCode: 'PROFILE_APPROVAL', toStageCode: 'LANGUAGE_A1', label: 'Start language track', actorRole: 'recruiter', conditions: [] },
+  { id: 'wft-4', workflowTemplateId: 'wf-germany-nurse-v1', fromStageCode: 'LANGUAGE_A1', toStageCode: 'LANGUAGE_A2', label: 'A1 complete', actorRole: 'trainer', conditions: [] },
+  { id: 'wft-5', workflowTemplateId: 'wf-germany-nurse-v1', fromStageCode: 'LANGUAGE_A2', toStageCode: 'LANGUAGE_B1', label: 'A2 complete', actorRole: 'trainer', conditions: [] },
+  { id: 'wft-6', workflowTemplateId: 'wf-germany-nurse-v1', fromStageCode: 'LANGUAGE_B1', toStageCode: 'LANGUAGE_B2', label: 'B1 complete', actorRole: 'trainer', conditions: [] },
+  { id: 'wft-7', workflowTemplateId: 'wf-germany-nurse-v1', fromStageCode: 'LANGUAGE_B2', toStageCode: 'INTERVIEW', label: 'B2 pass and schedule interview', actorRole: 'trainer', conditions: [{ field: 'languageLevel', operator: 'in', value: ['B2', 'C1', 'C2'] }] },
+  { id: 'wft-8', workflowTemplateId: 'wf-germany-nurse-v1', fromStageCode: 'INTERVIEW', toStageCode: 'OFFER', label: 'Interview cleared', actorRole: 'recruiter', conditions: [] },
+  { id: 'wft-9', workflowTemplateId: 'wf-germany-nurse-v1', fromStageCode: 'OFFER', toStageCode: 'VISA_FILING', label: 'Offer accepted', actorRole: 'recruiter', conditions: [] },
+  { id: 'wft-10', workflowTemplateId: 'wf-germany-nurse-v1', fromStageCode: 'VISA_FILING', toStageCode: 'PRE_DEPARTURE', label: 'Visa approved', actorRole: 'ops', conditions: [{ field: 'migrationStatus', operator: 'in', value: ['Visa processing', 'Visa approved'] }] },
+  { id: 'wft-11', workflowTemplateId: 'wf-germany-nurse-v1', fromStageCode: 'PRE_DEPARTURE', toStageCode: 'READY_TO_FLY', label: 'Compliance completed', actorRole: 'ops', conditions: [] },
+];
+
+export const workflowTriggers: WorkflowTrigger[] = [
+  {
+    id: 'wftr-1',
+    workflowTemplateId: 'wf-germany-nurse-v1',
+    stageCode: 'LANGUAGE_A1',
+    eventType: 'on_enter',
+    actionType: 'create_task',
+    actionConfig: {
+      title: 'Assign A1 course batch',
+      message: 'Auto-create language onboarding task in training module.',
+    },
+  },
+  {
+    id: 'wftr-2',
+    workflowTemplateId: 'wf-germany-nurse-v1',
+    stageCode: 'VISA_FILING',
+    eventType: 'on_breach',
+    actionType: 'notify',
+    actionConfig: {
+      title: 'Visa SLA breach escalation',
+      message: 'Escalate stalled visa cases to operations manager.',
+    },
+  },
+];
+
+export const candidateWorkflowInstances: CandidateWorkflowInstance[] = [
+  {
+    id: 'cwi-1',
+    candidateId: 'can-1',
+    workflowTemplateId: 'wf-germany-nurse-v1',
+    currentStageCode: 'LANGUAGE_B2',
+    stageEnteredAt: '2026-03-15T09:00:00.000Z',
+    stageDueAt: '2026-03-29T09:00:00.000Z',
+  },
+  {
+    id: 'cwi-2',
+    candidateId: 'can-2',
+    workflowTemplateId: 'wf-germany-nurse-v1',
+    currentStageCode: 'DOC_VERIFICATION',
+    stageEnteredAt: '2026-03-19T09:00:00.000Z',
+    stageDueAt: '2026-03-21T09:00:00.000Z',
+  },
+  {
+    id: 'cwi-3',
+    candidateId: 'can-4',
+    workflowTemplateId: 'wf-germany-nurse-v1',
+    currentStageCode: 'VISA_FILING',
+    stageEnteredAt: '2026-03-10T09:00:00.000Z',
+    stageDueAt: '2026-03-17T09:00:00.000Z',
+  },
+];
+
+export const workflowEvents: WorkflowEvent[] = [
+  {
+    id: 'wfe-1',
+    instanceId: 'cwi-1',
+    eventType: 'transition',
+    actorId: 'ops-1',
+    payload: {
+      fromStage: 'LANGUAGE_B1',
+      toStage: 'LANGUAGE_B2',
+      note: 'B1 exam cleared and moved to B2 certification stage.',
+    },
+    createdAt: '2026-03-15T09:00:00.000Z',
+  },
+  {
+    id: 'wfe-2',
+    instanceId: 'cwi-3',
+    eventType: 'trigger',
+    actorId: 'system',
+    payload: {
+      triggerId: 'wftr-2',
+      message: 'Visa SLA breach escalation alert fired.',
+    },
+    createdAt: '2026-03-18T09:00:00.000Z',
+  },
+];
