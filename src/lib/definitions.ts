@@ -156,11 +156,50 @@ export type CandidateDocumentStatus = 'Missing' | 'Submitted' | 'Verified' | 'Re
 export type CandidateDocumentRecord = {
   id: string;
   candidateId: string;
+  packId?: string;
   documentName: string;
   status: CandidateDocumentStatus;
+  complianceStatus?: 'Compliant' | 'At Risk' | 'Non-Compliant';
   url?: string;
+  submittedAt?: string;
+  verifiedAt?: string;
+  expiryDate?: string;
+  reminderWindowDays?: number;
   lastUpdatedAt: string;
   verifiedBy?: string;
+  notes?: string;
+};
+
+export type VerificationQueueStatus = 'Pending Review' | 'In Review' | 'Approved' | 'Rejected';
+export type VerificationQueuePriority = 'Low' | 'Medium' | 'High';
+
+export type DocumentVerificationQueueItem = {
+  id: string;
+  candidateId: string;
+  documentId: string;
+  packId: string;
+  queueStatus: VerificationQueueStatus;
+  priority: VerificationQueuePriority;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ComplianceAuditAction =
+  | 'Submitted'
+  | 'Verified'
+  | 'Rejected'
+  | 'Expiry Updated'
+  | 'Pack Assigned';
+
+export type ComplianceAuditEvent = {
+  id: string;
+  candidateId: string;
+  documentId: string;
+  action: ComplianceAuditAction;
+  actor: string;
+  timestamp: string;
+  oldValue?: string;
+  newValue?: string;
   notes?: string;
 };
 

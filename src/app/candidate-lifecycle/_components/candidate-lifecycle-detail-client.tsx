@@ -265,7 +265,9 @@ export function CandidateLifecycleDetailClient({
                   <TableRow>
                     <TableHead>Document</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Compliance</TableHead>
                     <TableHead>Update Status</TableHead>
+                    <TableHead>Expiry</TableHead>
                     <TableHead>Updated</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -287,6 +289,19 @@ export function CandidateLifecycleDetailClient({
                         </Badge>
                       </TableCell>
                       <TableCell>
+                        <Badge
+                          variant={
+                            document.complianceStatus === "Non-Compliant"
+                              ? "destructive"
+                              : document.complianceStatus === "At Risk"
+                              ? "outline"
+                              : "secondary"
+                          }
+                        >
+                          {document.complianceStatus ?? "N/A"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
                         <Select
                           value={document.status}
                           onValueChange={(value) =>
@@ -304,6 +319,9 @@ export function CandidateLifecycleDetailClient({
                             ))}
                           </SelectContent>
                         </Select>
+                      </TableCell>
+                      <TableCell>
+                        {document.expiryDate ? new Date(document.expiryDate).toLocaleDateString() : "N/A"}
                       </TableCell>
                       <TableCell>{new Date(document.lastUpdatedAt).toLocaleString()}</TableCell>
                     </TableRow>

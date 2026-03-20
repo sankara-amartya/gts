@@ -1,4 +1,5 @@
 import type {
+  ComplianceAuditEvent,
   CandidateCommunicationEvent,
   CandidateDocumentRecord,
   CandidateIdentityProfile,
@@ -6,6 +7,7 @@ import type {
   CandidatePaymentRecord,
   CandidateTimelineEvent,
   CandidateTrainingEnrollment,
+  DocumentVerificationQueueItem,
   Candidate,
   CandidateWorkflowInstance,
   Client,
@@ -248,13 +250,90 @@ export const candidateIdentityProfiles: CandidateIdentityProfile[] = [
 ];
 
 export const candidateDocuments: CandidateDocumentRecord[] = [
-  { id: 'cdr-1', candidateId: 'can-1', documentName: 'Passport', status: 'Verified', url: '#', lastUpdatedAt: '2026-03-11T10:00:00.000Z', verifiedBy: 'ops-1' },
-  { id: 'cdr-2', candidateId: 'can-1', documentName: 'Nursing Degree', status: 'Verified', url: '#', lastUpdatedAt: '2026-03-11T10:10:00.000Z', verifiedBy: 'ops-1' },
-  { id: 'cdr-3', candidateId: 'can-1', documentName: 'B2 Certificate', status: 'Submitted', url: '#', lastUpdatedAt: '2026-03-16T09:00:00.000Z' },
-  { id: 'cdr-4', candidateId: 'can-2', documentName: 'Passport', status: 'Submitted', url: '#', lastUpdatedAt: '2026-03-19T07:30:00.000Z' },
-  { id: 'cdr-5', candidateId: 'can-2', documentName: 'Nursing Degree', status: 'Missing', lastUpdatedAt: '2026-03-19T07:30:00.000Z' },
-  { id: 'cdr-6', candidateId: 'can-4', documentName: 'Passport', status: 'Verified', url: '#', lastUpdatedAt: '2026-03-05T11:30:00.000Z', verifiedBy: 'ops-2' },
-  { id: 'cdr-7', candidateId: 'can-4', documentName: 'Visa Application', status: 'Submitted', url: '#', lastUpdatedAt: '2026-03-12T10:00:00.000Z' },
+  { id: 'cdr-1', candidateId: 'can-1', packId: 'dp-1', documentName: 'Passport', status: 'Verified', complianceStatus: 'Compliant', url: '#', submittedAt: '2026-03-10T09:00:00.000Z', verifiedAt: '2026-03-11T10:00:00.000Z', expiryDate: '2031-08-20T00:00:00.000Z', reminderWindowDays: 90, lastUpdatedAt: '2026-03-11T10:00:00.000Z', verifiedBy: 'ops-1' },
+  { id: 'cdr-2', candidateId: 'can-1', packId: 'dp-1', documentName: 'Nursing Degree', status: 'Verified', complianceStatus: 'Compliant', url: '#', submittedAt: '2026-03-10T09:15:00.000Z', verifiedAt: '2026-03-11T10:10:00.000Z', reminderWindowDays: 365, lastUpdatedAt: '2026-03-11T10:10:00.000Z', verifiedBy: 'ops-1' },
+  { id: 'cdr-3', candidateId: 'can-1', packId: 'dp-1', documentName: 'B2 Certificate', status: 'Submitted', complianceStatus: 'At Risk', url: '#', submittedAt: '2026-03-16T09:00:00.000Z', expiryDate: '2026-04-10T00:00:00.000Z', reminderWindowDays: 30, lastUpdatedAt: '2026-03-16T09:00:00.000Z' },
+  { id: 'cdr-4', candidateId: 'can-2', packId: 'dp-1', documentName: 'Passport', status: 'Submitted', complianceStatus: 'At Risk', url: '#', submittedAt: '2026-03-19T07:30:00.000Z', expiryDate: '2027-02-10T00:00:00.000Z', reminderWindowDays: 90, lastUpdatedAt: '2026-03-19T07:30:00.000Z' },
+  { id: 'cdr-5', candidateId: 'can-2', packId: 'dp-1', documentName: 'Nursing Degree', status: 'Missing', complianceStatus: 'Non-Compliant', reminderWindowDays: 365, lastUpdatedAt: '2026-03-19T07:30:00.000Z' },
+  { id: 'cdr-6', candidateId: 'can-4', packId: 'dp-1', documentName: 'Passport', status: 'Verified', complianceStatus: 'Compliant', url: '#', submittedAt: '2026-03-03T10:00:00.000Z', verifiedAt: '2026-03-05T11:30:00.000Z', expiryDate: '2026-03-19T00:00:00.000Z', reminderWindowDays: 90, lastUpdatedAt: '2026-03-05T11:30:00.000Z', verifiedBy: 'ops-2' },
+  { id: 'cdr-7', candidateId: 'can-4', packId: 'dp-1', documentName: 'Visa Application', status: 'Submitted', complianceStatus: 'Non-Compliant', url: '#', submittedAt: '2026-03-12T10:00:00.000Z', expiryDate: '2026-03-22T00:00:00.000Z', reminderWindowDays: 14, lastUpdatedAt: '2026-03-12T10:00:00.000Z' },
+];
+
+export const documentVerificationQueue: DocumentVerificationQueueItem[] = [
+  {
+    id: 'dq-1',
+    candidateId: 'can-1',
+    documentId: 'cdr-3',
+    packId: 'dp-1',
+    queueStatus: 'Pending Review',
+    priority: 'Medium',
+    createdAt: '2026-03-16T09:05:00.000Z',
+    updatedAt: '2026-03-16T09:05:00.000Z',
+  },
+  {
+    id: 'dq-2',
+    candidateId: 'can-2',
+    documentId: 'cdr-4',
+    packId: 'dp-1',
+    queueStatus: 'In Review',
+    priority: 'Medium',
+    createdAt: '2026-03-19T07:35:00.000Z',
+    updatedAt: '2026-03-19T10:00:00.000Z',
+  },
+  {
+    id: 'dq-3',
+    candidateId: 'can-2',
+    documentId: 'cdr-5',
+    packId: 'dp-1',
+    queueStatus: 'Pending Review',
+    priority: 'High',
+    createdAt: '2026-03-19T07:35:00.000Z',
+    updatedAt: '2026-03-19T07:35:00.000Z',
+  },
+  {
+    id: 'dq-4',
+    candidateId: 'can-4',
+    documentId: 'cdr-7',
+    packId: 'dp-1',
+    queueStatus: 'Pending Review',
+    priority: 'High',
+    createdAt: '2026-03-12T10:05:00.000Z',
+    updatedAt: '2026-03-12T10:05:00.000Z',
+  },
+];
+
+export const complianceAuditEvents: ComplianceAuditEvent[] = [
+  {
+    id: 'ca-1',
+    candidateId: 'can-1',
+    documentId: 'cdr-3',
+    action: 'Submitted',
+    actor: 'candidate',
+    timestamp: '2026-03-16T09:00:00.000Z',
+    notes: 'B2 certificate uploaded from portal.',
+  },
+  {
+    id: 'ca-2',
+    candidateId: 'can-2',
+    documentId: 'cdr-5',
+    action: 'Rejected',
+    actor: 'ops-1',
+    timestamp: '2026-03-19T10:15:00.000Z',
+    oldValue: 'Submitted',
+    newValue: 'Missing',
+    notes: 'Degree scan was unreadable. Re-upload requested.',
+  },
+  {
+    id: 'ca-3',
+    candidateId: 'can-4',
+    documentId: 'cdr-6',
+    action: 'Expiry Updated',
+    actor: 'compliance-1',
+    timestamp: '2026-03-18T14:20:00.000Z',
+    oldValue: '2026-03-01T00:00:00.000Z',
+    newValue: '2026-03-19T00:00:00.000Z',
+    notes: 'Passport renewal acknowledgement attached.',
+  },
 ];
 
 export const candidateTrainingEnrollments: CandidateTrainingEnrollment[] = [
