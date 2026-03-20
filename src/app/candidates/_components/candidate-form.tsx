@@ -33,6 +33,10 @@ const formSchema = z.object({
   mandateId: z.string({ required_error: "Mandate is required." }),
   status: z.enum(candidateStatuses),
   migrationStatus: z.string().min(2, "Migration status is required."),
+  knackId: z.string().optional(),
+  languageLevel: z.string().optional(),
+  cvUrl: z.string().optional(),
+  languageCertificateUrl: z.string().optional(),
 });
 
 type CandidateFormProps = {
@@ -50,7 +54,11 @@ export function CandidateForm({ open, onOpenChange, candidate }: CandidateFormPr
       email: "",
       phone: "",
       status: "Screening",
-      migrationStatus: ""
+      migrationStatus: "",
+      knackId: "",
+      languageLevel: "",
+      cvUrl: "",
+      languageCertificateUrl: "",
     },
   });
 
@@ -64,7 +72,11 @@ export function CandidateForm({ open, onOpenChange, candidate }: CandidateFormPr
         phone: "",
         mandateId: undefined,
         status: "Screening",
-        migrationStatus: ""
+        migrationStatus: "",
+        knackId: "",
+        languageLevel: "",
+        cvUrl: "",
+        languageCertificateUrl: "",
       });
     }
   }, [candidate, form, open]);
@@ -80,12 +92,12 @@ export function CandidateForm({ open, onOpenChange, candidate }: CandidateFormPr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{candidate ? "Edit Candidate" : "New Candidate"}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4 max-h-[80vh] overflow-y-auto pr-6">
             <FormField
               control={form.control}
               name="name"
@@ -99,19 +111,34 @@ export function CandidateForm({ open, onOpenChange, candidate }: CandidateFormPr
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="john.doe@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-2 gap-4">
+                <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                        <Input placeholder="john.doe@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Telephone</FormLabel>
+                        <FormControl>
+                            <Input placeholder="123-456-7890" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}
+                />
+            </div>
             <FormField
               control={form.control}
               name="mandateId"
@@ -171,7 +198,61 @@ export function CandidateForm({ open, onOpenChange, candidate }: CandidateFormPr
                 )}
                 />
             </div>
-            <DialogFooter>
+            <div className="grid grid-cols-2 gap-4">
+                <FormField
+                    control={form.control}
+                    name="knackId"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Knack ID</FormLabel>
+                            <FormControl>
+                                <Input placeholder="k_jd_01" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="languageLevel"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Language Level</FormLabel>
+                            <FormControl>
+                                <Input placeholder="B1" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </div>
+             <FormField
+              control={form.control}
+              name="cvUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>CV Upload</FormLabel>
+                  <FormControl>
+                    <Input type="file" className="pt-2" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="languageCertificateUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Language Certificate Upload</FormLabel>
+                  <FormControl>
+                    <Input type="file" className="pt-2" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <DialogFooter className="pt-4">
                 <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
                 <Button type="submit">Save</Button>
             </DialogFooter>

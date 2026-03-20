@@ -37,10 +37,10 @@ export const progressUpdates: ProgressUpdate[] = [
 ];
 
 export const candidates: Candidate[] = [
-    { id: 'can-1', name: 'John Doe', email: 'john.doe@email.com', phone: '111-222-3333', mandateId: 'man-1', status: 'Interviewing', migrationStatus: 'Visa processing', createdAt: '2023-06-01' },
-    { id: 'can-2', name: 'Jane Smith', email: 'jane.smith@email.com', phone: '444-555-6666', mandateId: 'man-1', status: 'Training', migrationStatus: 'Awaiting documents', createdAt: '2023-06-05' },
-    { id: 'can-3', name: 'Peter Jones', email: 'peter.jones@email.com', phone: '777-888-9999', mandateId: 'man-2', status: 'Screening', migrationStatus: 'Not started', createdAt: '2023-06-10' },
-    { id: 'can-4', name: 'Maria Garcia', email: 'maria.g@email.com', phone: '123-987-4561', mandateId: 'man-5', status: 'Documentation', migrationStatus: 'Documents submitted', createdAt: '2023-06-15' },
+    { id: 'can-1', name: 'John Doe', email: 'john.doe@email.com', phone: '111-222-3333', mandateId: 'man-1', status: 'Interviewing', migrationStatus: 'Visa processing', createdAt: '2023-06-01', knackId: 'k_jd_01', languageLevel: 'B2', cvUrl: '#', languageCertificateUrl: '#' },
+    { id: 'can-2', name: 'Jane Smith', email: 'jane.smith@email.com', phone: '444-555-6666', mandateId: 'man-1', status: 'Training', migrationStatus: 'Awaiting documents', createdAt: '2023-06-05', knackId: 'k_js_02', languageLevel: 'A2', cvUrl: '#', languageCertificateUrl: '#' },
+    { id: 'can-3', name: 'Peter Jones', email: 'peter.jones@email.com', phone: '777-888-9999', mandateId: 'man-2', status: 'Screening', migrationStatus: 'Not started', createdAt: '2023-06-10', knackId: 'k_pj_03', languageLevel: 'C1' },
+    { id: 'can-4', name: 'Maria Garcia', email: 'maria.g@email.com', phone: '123-987-4561', mandateId: 'man-5', status: 'Documentation', migrationStatus: 'Documents submitted', createdAt: '2023-06-15', knackId: 'k_mg_04', languageLevel: 'B1', cvUrl: '#' },
 ];
 
 export const documentPacks: DocumentPack[] = [

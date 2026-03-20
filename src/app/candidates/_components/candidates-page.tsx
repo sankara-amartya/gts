@@ -4,11 +4,12 @@ import React, { useState, useMemo } from 'react';
 import { PageHeader } from "@/components/page-header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Search } from 'lucide-react';
+import { PlusCircle, Search, Upload } from 'lucide-react';
 import { candidates as allCandidates, candidateStatuses, mandates } from "@/lib/data";
 import { Candidate } from "@/lib/definitions";
 import { CandidatesTable } from "./candidates-table";
 import { CandidateForm } from "./candidate-form";
+import { BulkUploadDialog } from "./bulk-upload-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export function CandidatesPage() {
@@ -16,6 +17,7 @@ export function CandidatesPage() {
     const [statusFilter, setStatusFilter] = useState('all');
     const [mandateFilter, setMandateFilter] = useState('all');
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [bulkUploadOpen, setBulkUploadOpen] = useState(false);
     const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
 
     const filteredCandidates = useMemo(() => {
@@ -76,6 +78,10 @@ export function CandidatesPage() {
                         ))}
                     </SelectContent>
                 </Select>
+                <Button variant="outline" onClick={() => setBulkUploadOpen(true)}>
+                    <Upload className="mr-2 h-4 w-4" />
+                    Bulk Upload
+                </Button>
                 <Button onClick={handleNew}>
                     <PlusCircle className="mr-2 h-4 w-4" />
                     New Candidate
@@ -83,6 +89,7 @@ export function CandidatesPage() {
             </PageHeader>
             <CandidatesTable candidates={filteredCandidates} onEdit={handleEdit} />
             <CandidateForm open={dialogOpen} onOpenChange={handleDialogClose} candidate={selectedCandidate} />
+            <BulkUploadDialog open={bulkUploadOpen} onOpenChange={setBulkUploadOpen} />
         </div>
     );
 }

@@ -38,12 +38,16 @@ export type CandidateStatus = 'Screening' | 'Training' | 'Documentation' | 'Read
 
 export type Candidate = {
     id: string;
+    knackId?: string;
     name: string;
     email: string;
-    phone: string;
+    phone?: string;
     mandateId: string;
     status: CandidateStatus;
+    languageLevel?: string;
     migrationStatus: string;
+    cvUrl?: string;
+    languageCertificateUrl?: string;
     createdAt: string;
 }
 

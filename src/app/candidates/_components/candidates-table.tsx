@@ -31,6 +31,7 @@ export function CandidatesTable({ candidates, onEdit }: CandidatesTableProps) {
                             <TableHead>Candidate</TableHead>
                             <TableHead>Mandate</TableHead>
                             <TableHead>Status</TableHead>
+                            <TableHead>Language Level</TableHead>
                             <TableHead>Migration Status</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
                         </TableRow>
@@ -55,6 +56,9 @@ export function CandidatesTable({ candidates, onEdit }: CandidatesTableProps) {
                                 <TableCell>
                                     <Badge variant="secondary">{candidate.status}</Badge>
                                 </TableCell>
+                                <TableCell>
+                                    <Badge variant="outline">{candidate.languageLevel || 'N/A'}</Badge>
+                                </TableCell>
                                 <TableCell className="text-muted-foreground">{candidate.migrationStatus}</TableCell>
                                 <TableCell className="text-right">
                                     <DropdownMenu>
@@ -75,7 +79,7 @@ export function CandidatesTable({ candidates, onEdit }: CandidatesTableProps) {
                             </TableRow>
                         )) : (
                             <TableRow>
-                                <TableCell colSpan={5} className="text-center">No candidates found.</TableCell>
+                                <TableCell colSpan={6} className="text-center">No candidates found.</TableCell>
                             </TableRow>
                         )}
                     </TableBody>
