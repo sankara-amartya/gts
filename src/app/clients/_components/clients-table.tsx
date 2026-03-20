@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { Client } from "@/lib/definitions";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Card, CardContent } from "@/components/ui/card";
 
 type ClientsTableProps = {
     clients: Client[];
@@ -73,5 +74,3 @@ export function ClientsTable({ clients, onEdit }: ClientsTableProps) {
         </Card>
     );
 }
-
-import { Card, CardContent } from "@/components/ui/card";
