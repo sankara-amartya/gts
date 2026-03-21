@@ -11,6 +11,7 @@ import {
   SidebarMenuButton,
   SidebarFooter,
   SidebarInset,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import {
   LayoutDashboard,
@@ -196,7 +197,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <main className="p-4 sm:p-6 lg:p-8">
+        <div className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background/95 px-3 backdrop-blur md:hidden">
+          <SidebarTrigger className="h-9 w-9" />
+          <span className="text-sm font-semibold">Nexus Mandate</span>
+        </div>
+        <main className="p-3 sm:p-6 lg:p-8">
             {children}
         </main>
       </SidebarInset>

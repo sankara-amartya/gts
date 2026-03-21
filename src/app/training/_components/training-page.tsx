@@ -361,17 +361,17 @@ export function TrainingPage() {
     return (
         <div className="flex flex-col gap-8">
             <PageHeader title="Training & Assessments">
-                <div className="relative">
+                <div className="relative w-full sm:w-64">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search courses..."
-                        className="pl-8 w-64"
+                        className="w-full pl-8"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
                 <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-full sm:w-[180px]">
                         <SelectValue placeholder="Filter by category" />
                     </SelectTrigger>
                     <SelectContent>
@@ -381,7 +381,7 @@ export function TrainingPage() {
                         ))}
                     </SelectContent>
                 </Select>
-                <Button onClick={handleNew}>
+                <Button onClick={handleNew} className="w-full sm:w-auto">
                     <PlusCircle className="mr-2 h-4 w-4" />
                     New Course
                 </Button>
@@ -407,12 +407,12 @@ export function TrainingPage() {
             </div>
 
             <Tabs defaultValue="catalog" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5">
-                    <TabsTrigger value="catalog">Course Catalog</TabsTrigger>
-                    <TabsTrigger value="attendance">Attendance</TabsTrigger>
-                    <TabsTrigger value="assessments">Assessments</TabsTrigger>
-                    <TabsTrigger value="certificates">Certificates</TabsTrigger>
-                    <TabsTrigger value="matrix">Candidate Matrix</TabsTrigger>
+                <TabsList className="w-full justify-start overflow-x-auto">
+                    <TabsTrigger value="catalog" className="shrink-0">Course Catalog</TabsTrigger>
+                    <TabsTrigger value="attendance" className="shrink-0">Attendance</TabsTrigger>
+                    <TabsTrigger value="assessments" className="shrink-0">Assessments</TabsTrigger>
+                    <TabsTrigger value="certificates" className="shrink-0">Certificates</TabsTrigger>
+                    <TabsTrigger value="matrix" className="shrink-0">Candidate Matrix</TabsTrigger>
                 </TabsList>
                 <TabsContent value="catalog">
                     <TrainingTable courses={filteredCourses} onEdit={handleEdit} />
@@ -455,7 +455,7 @@ export function TrainingPage() {
                                         <Input type="date" value={newBatchEndDate} onChange={(event) => setNewBatchEndDate(event.target.value)} />
                                     </div>
                                 </div>
-                                <Button onClick={handleCreateBatch}>Create Batch</Button>
+                                <Button onClick={handleCreateBatch} className="w-full">Create Batch</Button>
                             </CardContent>
                         </Card>
 
@@ -491,7 +491,7 @@ export function TrainingPage() {
                                         <Input value={newSessionDuration} onChange={(event) => setNewSessionDuration(event.target.value)} placeholder="120" />
                                     </div>
                                 </div>
-                                <Button onClick={handleCreateSession}>Create Session & Attendance Rows</Button>
+                                <Button onClick={handleCreateSession} className="w-full">Create Session & Attendance Rows</Button>
                             </CardContent>
                         </Card>
                     </div>
@@ -533,7 +533,7 @@ export function TrainingPage() {
                                 <CardTitle>Export</CardTitle>
                             </CardHeader>
                             <CardContent className="flex h-full items-center">
-                                <Button variant="outline" onClick={exportAssessmentsCsv}>
+                                <Button variant="outline" onClick={exportAssessmentsCsv} className="w-full">
                                     <Download className="mr-2 h-4 w-4" />
                                     Export Assessments CSV
                                 </Button>
@@ -551,8 +551,8 @@ export function TrainingPage() {
                     />
                 </TabsContent>
                 <TabsContent value="certificates">
-                    <div className="mb-4 flex justify-end">
-                        <Button variant="outline" onClick={exportCertificatesCsv}>
+                    <div className="mb-4 flex justify-stretch sm:justify-end">
+                        <Button variant="outline" onClick={exportCertificatesCsv} className="w-full sm:w-auto">
                             <Download className="mr-2 h-4 w-4" />
                             Export Certificates CSV
                         </Button>

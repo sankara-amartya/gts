@@ -43,17 +43,17 @@ export function ClientsPage() {
     return (
         <div className="flex flex-col gap-8">
             <PageHeader title="Clients">
-                <div className="relative">
+                <div className="relative w-full sm:w-64">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search clients..."
-                        className="pl-8 w-64"
+                        className="w-full pl-8"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
                 <Select value={industryFilter} onValueChange={setIndustryFilter}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-full sm:w-[180px]">
                         <SelectValue placeholder="Filter by industry" />
                     </SelectTrigger>
                     <SelectContent>
@@ -63,7 +63,7 @@ export function ClientsPage() {
                         ))}
                     </SelectContent>
                 </Select>
-                <Button onClick={handleNew}>
+                <Button onClick={handleNew} className="w-full sm:w-auto">
                     <PlusCircle className="mr-2 h-4 w-4" />
                     New Client
                 </Button>

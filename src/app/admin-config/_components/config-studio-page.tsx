@@ -644,7 +644,7 @@ export function ConfigStudioPage() {
   return (
     <div className="flex flex-col gap-8">
       <PageHeader title="Admin / No-Code Config Studio">
-        <Badge variant="outline">Drag & Drop Builder</Badge>
+        <Badge variant="outline" className="justify-center sm:justify-start">Drag & Drop Builder</Badge>
         <input
           ref={fileInputRef}
           type="file"
@@ -658,22 +658,22 @@ export function ConfigStudioPage() {
             event.currentTarget.value = "";
           }}
         />
-        <Button variant="outline" onClick={exportAllConfigs}>
+        <Button variant="outline" onClick={exportAllConfigs} className="w-full sm:w-auto">
           <Download className="mr-2 h-4 w-4" />
           Export JSON
         </Button>
-        <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+        <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="w-full sm:w-auto">
           <Upload className="mr-2 h-4 w-4" />
           Import JSON
         </Button>
       </PageHeader>
 
       <Tabs defaultValue="workflows" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
-          <TabsTrigger value="workflows">Workflows</TabsTrigger>
-          <TabsTrigger value="documents">Document Packs</TabsTrigger>
-          <TabsTrigger value="payments">Payment Plans</TabsTrigger>
-          <TabsTrigger value="migration">Migration Templates</TabsTrigger>
+        <TabsList className="w-full justify-start overflow-x-auto">
+          <TabsTrigger value="workflows" className="shrink-0">Workflows</TabsTrigger>
+          <TabsTrigger value="documents" className="shrink-0">Document Packs</TabsTrigger>
+          <TabsTrigger value="payments" className="shrink-0">Payment Plans</TabsTrigger>
+          <TabsTrigger value="migration" className="shrink-0">Migration Templates</TabsTrigger>
         </TabsList>
 
         <TabsContent value="workflows" className="space-y-4">
@@ -684,18 +684,18 @@ export function ConfigStudioPage() {
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-3">
                 <Select value={selectedWorkflowTemplateId} onValueChange={loadWorkflowTemplate}>
-                  <SelectTrigger className="w-[320px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-full sm:w-[320px]"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {workflowTemplates.map((template) => (
                       <SelectItem key={template.id} value={template.id}>{template.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <Button onClick={saveWorkflowTemplate}>Save Workflow</Button>
-                <Button variant="secondary" onClick={publishWorkflowVersion}>Publish Version</Button>
-                <div className="flex items-center gap-2">
+                <Button onClick={saveWorkflowTemplate} className="w-full sm:w-auto">Save Workflow</Button>
+                <Button variant="secondary" onClick={publishWorkflowVersion} className="w-full sm:w-auto">Publish Version</Button>
+                <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
                   <Select value={selectedWorkflowVersion} onValueChange={setSelectedWorkflowVersion}>
-                    <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="w-full sm:w-[180px]"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="latest">Latest</SelectItem>
                       {(workflowHistory[selectedWorkflowTemplateId] ?? []).map((entry) => (
@@ -705,7 +705,7 @@ export function ConfigStudioPage() {
                       ))}
                     </SelectContent>
                   </Select>
-                  <Button variant="outline" onClick={rollbackWorkflowVersion}>
+                  <Button variant="outline" onClick={rollbackWorkflowVersion} className="w-full sm:w-auto">
                     <RotateCcw className="mr-2 h-4 w-4" />
                     Rollback
                   </Button>
@@ -775,18 +775,18 @@ export function ConfigStudioPage() {
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-3">
                 <Select value={selectedPackId} onValueChange={loadPack}>
-                  <SelectTrigger className="w-[360px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-full sm:w-[360px]"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {documentPacks.map((pack) => (
                       <SelectItem key={pack.id} value={pack.id}>{pack.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <Button onClick={saveDocumentPack}>Save Pack</Button>
-                <Button variant="secondary" onClick={publishPackVersion}>Publish Version</Button>
-                <div className="flex items-center gap-2">
+                <Button onClick={saveDocumentPack} className="w-full sm:w-auto">Save Pack</Button>
+                <Button variant="secondary" onClick={publishPackVersion} className="w-full sm:w-auto">Publish Version</Button>
+                <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
                   <Select value={selectedPackVersion} onValueChange={setSelectedPackVersion}>
-                    <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="w-full sm:w-[180px]"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="latest">Latest</SelectItem>
                       {(packHistory[selectedPackId] ?? []).map((entry) => (
@@ -796,7 +796,7 @@ export function ConfigStudioPage() {
                       ))}
                     </SelectContent>
                   </Select>
-                  <Button variant="outline" onClick={rollbackPackVersion}>
+                  <Button variant="outline" onClick={rollbackPackVersion} className="w-full sm:w-auto">
                     <RotateCcw className="mr-2 h-4 w-4" />
                     Rollback
                   </Button>
@@ -810,6 +810,7 @@ export function ConfigStudioPage() {
                   onChange={(event) => setNewPackDocument(event.target.value)}
                 />
                 <Button
+                  className="w-full md:w-auto"
                   onClick={() => {
                     if (!newPackDocument.trim()) {
                       return;
@@ -867,18 +868,18 @@ export function ConfigStudioPage() {
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-3">
                 <Select value={selectedPlanId} onValueChange={loadPlan}>
-                  <SelectTrigger className="w-[360px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-full sm:w-[360px]"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {paymentPlanTemplates.map((plan) => (
                       <SelectItem key={plan.id} value={plan.id}>{plan.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <Button onClick={savePaymentPlan}>Save Plan</Button>
-                <Button variant="secondary" onClick={publishPlanVersion}>Publish Version</Button>
-                <div className="flex items-center gap-2">
+                <Button onClick={savePaymentPlan} className="w-full sm:w-auto">Save Plan</Button>
+                <Button variant="secondary" onClick={publishPlanVersion} className="w-full sm:w-auto">Publish Version</Button>
+                <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
                   <Select value={selectedPlanVersion} onValueChange={setSelectedPlanVersion}>
-                    <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="w-full sm:w-[180px]"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="latest">Latest</SelectItem>
                       {(planHistory[selectedPlanId] ?? []).map((entry) => (
@@ -888,7 +889,7 @@ export function ConfigStudioPage() {
                       ))}
                     </SelectContent>
                   </Select>
-                  <Button variant="outline" onClick={rollbackPlanVersion}>
+                  <Button variant="outline" onClick={rollbackPlanVersion} className="w-full sm:w-auto">
                     <RotateCcw className="mr-2 h-4 w-4" />
                     Rollback
                   </Button>
@@ -1074,18 +1075,18 @@ export function ConfigStudioPage() {
             <CardContent className="space-y-4">
               <div className="flex flex-wrap gap-3">
                 <Select value={selectedCountry} onValueChange={(value: MigrationCountry) => loadCountryTemplate(value)}>
-                  <SelectTrigger className="w-[240px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-full sm:w-[240px]"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {countries.map((country) => (
                       <SelectItem key={country} value={country}>{country}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <Button onClick={saveMigrationTemplate}>Save Migration Template</Button>
-                <Button variant="secondary" onClick={publishMigrationVersion}>Publish Version</Button>
-                <div className="flex items-center gap-2">
+                <Button onClick={saveMigrationTemplate} className="w-full sm:w-auto">Save Migration Template</Button>
+                <Button variant="secondary" onClick={publishMigrationVersion} className="w-full sm:w-auto">Publish Version</Button>
+                <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
                   <Select value={selectedMigrationVersion} onValueChange={setSelectedMigrationVersion}>
-                    <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="w-full sm:w-[180px]"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="latest">Latest</SelectItem>
                       {(migrationHistory[selectedCountry] ?? []).map((entry) => (
@@ -1095,7 +1096,7 @@ export function ConfigStudioPage() {
                       ))}
                     </SelectContent>
                   </Select>
-                  <Button variant="outline" onClick={rollbackMigrationVersion}>
+                  <Button variant="outline" onClick={rollbackMigrationVersion} className="w-full sm:w-auto">
                     <RotateCcw className="mr-2 h-4 w-4" />
                     Rollback
                   </Button>

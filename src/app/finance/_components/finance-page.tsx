@@ -338,17 +338,17 @@ export function FinancePage() {
     return (
         <div className="flex flex-col gap-8">
             <PageHeader title="Payments & Finance">
-                <div className="relative">
+                <div className="relative w-full sm:w-64">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search invoices or transactions..."
-                        className="pl-8 w-64"
+                        className="w-full pl-8"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
                  <Select value={currencyFilter} onValueChange={setCurrencyFilter}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-full sm:w-[180px]">
                         <SelectValue placeholder="Filter by currency" />
                     </SelectTrigger>
                     <SelectContent>
@@ -358,7 +358,7 @@ export function FinancePage() {
                         ))}
                     </SelectContent>
                 </Select>
-                <Button variant="outline" onClick={handleRunDunning}>
+                <Button variant="outline" onClick={handleRunDunning} className="w-full sm:w-auto">
                     Run Dunning Cycle
                 </Button>
             </PageHeader>
@@ -373,14 +373,14 @@ export function FinancePage() {
             </div>
 
             <Tabs defaultValue="billing" className="w-full">
-                <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7">
-                    <TabsTrigger value="billing">Billing Models</TabsTrigger>
-                    <TabsTrigger value="invoices">Invoices</TabsTrigger>
-                    <TabsTrigger value="receipts">Receipts</TabsTrigger>
-                    <TabsTrigger value="refunds">Refunds</TabsTrigger>
-                    <TabsTrigger value="reconciliation">Reconciliation</TabsTrigger>
-                    <TabsTrigger value="dunning">Dunning</TabsTrigger>
-                    <TabsTrigger value="transactions">Ledger</TabsTrigger>
+                <TabsList className="w-full justify-start overflow-x-auto">
+                    <TabsTrigger value="billing" className="shrink-0">Billing Models</TabsTrigger>
+                    <TabsTrigger value="invoices" className="shrink-0">Invoices</TabsTrigger>
+                    <TabsTrigger value="receipts" className="shrink-0">Receipts</TabsTrigger>
+                    <TabsTrigger value="refunds" className="shrink-0">Refunds</TabsTrigger>
+                    <TabsTrigger value="reconciliation" className="shrink-0">Reconciliation</TabsTrigger>
+                    <TabsTrigger value="dunning" className="shrink-0">Dunning</TabsTrigger>
+                    <TabsTrigger value="transactions" className="shrink-0">Ledger</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="billing" className="space-y-4">
@@ -421,7 +421,7 @@ export function FinancePage() {
                                 <Input value={billingEmployerShare} onChange={(event) => setBillingEmployerShare(event.target.value)} />
                             </div>
                             <div className="flex items-end">
-                                <Button onClick={handleCreateBillingProfile}><PlusCircle className="mr-2 h-4 w-4" />Add Profile</Button>
+                                <Button onClick={handleCreateBillingProfile} className="w-full"><PlusCircle className="mr-2 h-4 w-4" />Add Profile</Button>
                             </div>
                         </CardContent>
                     </Card>
@@ -491,7 +491,7 @@ export function FinancePage() {
                                 <Input value={invoiceDueDays} onChange={(event) => setInvoiceDueDays(event.target.value)} />
                             </div>
                             <div className="flex items-end">
-                                <Button onClick={handleCreateInvoice}><PlusCircle className="mr-2 h-4 w-4" />Create</Button>
+                                <Button onClick={handleCreateInvoice} className="w-full"><PlusCircle className="mr-2 h-4 w-4" />Create</Button>
                             </div>
                             <div className="grid gap-2 lg:col-span-7">
                                 <Label>Description</Label>
@@ -500,8 +500,8 @@ export function FinancePage() {
                         </CardContent>
                     </Card>
 
-                    <div className="flex justify-end">
-                        <Button variant="outline" onClick={exportInvoicesCsv}><Download className="mr-2 h-4 w-4" />Export Invoices CSV</Button>
+                    <div className="flex justify-stretch sm:justify-end">
+                        <Button variant="outline" onClick={exportInvoicesCsv} className="w-full sm:w-auto"><Download className="mr-2 h-4 w-4" />Export Invoices CSV</Button>
                     </div>
 
                     <Card>
@@ -564,13 +564,13 @@ export function FinancePage() {
                                 <Input value={receiptReference} onChange={(event) => setReceiptReference(event.target.value)} />
                             </div>
                             <div className="flex items-end">
-                                <Button onClick={handleRecordReceipt}><PlusCircle className="mr-2 h-4 w-4" />Capture</Button>
+                                <Button onClick={handleRecordReceipt} className="w-full"><PlusCircle className="mr-2 h-4 w-4" />Capture</Button>
                             </div>
                         </CardContent>
                     </Card>
 
-                    <div className="flex justify-end">
-                        <Button variant="outline" onClick={exportReceiptsCsv}><Download className="mr-2 h-4 w-4" />Export Receipts CSV</Button>
+                    <div className="flex justify-stretch sm:justify-end">
+                        <Button variant="outline" onClick={exportReceiptsCsv} className="w-full sm:w-auto"><Download className="mr-2 h-4 w-4" />Export Receipts CSV</Button>
                     </div>
 
                     <Card>
@@ -614,7 +614,7 @@ export function FinancePage() {
                                 <Input value={refundReason} onChange={(event) => setRefundReason(event.target.value)} />
                             </div>
                             <div className="flex items-end">
-                                <Button onClick={handleIssueRefund}><PlusCircle className="mr-2 h-4 w-4" />Issue Refund</Button>
+                                <Button onClick={handleIssueRefund} className="w-full"><PlusCircle className="mr-2 h-4 w-4" />Issue Refund</Button>
                             </div>
                         </CardContent>
                     </Card>
@@ -660,7 +660,7 @@ export function FinancePage() {
                                 <Input value={reconReference} onChange={(event) => setReconReference(event.target.value)} />
                             </div>
                             <div className="flex items-end">
-                                <Button onClick={handleReconcile}><PlusCircle className="mr-2 h-4 w-4" />Reconcile</Button>
+                                <Button onClick={handleReconcile} className="w-full"><PlusCircle className="mr-2 h-4 w-4" />Reconcile</Button>
                             </div>
                         </CardContent>
                     </Card>
@@ -689,9 +689,9 @@ export function FinancePage() {
                 <TabsContent value="dunning" className="space-y-4">
                     <Card>
                         <CardContent>
-                            <div className="flex items-center justify-between py-4">
+                            <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
                                 <p className="text-sm text-muted-foreground">Automated debt collection reminders for overdue invoices.</p>
-                                <Button variant="outline" onClick={handleRunDunning}>Run Dunning Cycle</Button>
+                                <Button variant="outline" onClick={handleRunDunning} className="w-full sm:w-auto">Run Dunning Cycle</Button>
                             </div>
                             <Table>
                                 <TableHeader><TableRow><TableHead>Invoice</TableHead><TableHead>Payer</TableHead><TableHead>Stage</TableHead><TableHead>Status</TableHead><TableHead>Attempts</TableHead><TableHead>Next Action</TableHead></TableRow></TableHeader>

@@ -44,17 +44,17 @@ export function MandatesPage() {
     return (
         <div className="flex flex-col gap-8">
             <PageHeader title="Mandates">
-                <div className="relative">
+                <div className="relative w-full sm:w-64">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search by role..."
-                        className="pl-8 w-64"
+                        className="w-full pl-8"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
                 <Select value={clientFilter} onValueChange={setClientFilter}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-full sm:w-[180px]">
                         <SelectValue placeholder="Filter by client" />
                     </SelectTrigger>
                     <SelectContent>
@@ -65,7 +65,7 @@ export function MandatesPage() {
                     </SelectContent>
                 </Select>
                 <Select value={stageFilter} onValueChange={setStageFilter}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-full sm:w-[180px]">
                         <SelectValue placeholder="Filter by stage" />
                     </SelectTrigger>
                     <SelectContent>
@@ -75,7 +75,7 @@ export function MandatesPage() {
                         ))}
                     </SelectContent>
                 </Select>
-                <Button onClick={handleNew}>
+                <Button onClick={handleNew} className="w-full sm:w-auto">
                     <PlusCircle className="mr-2 h-4 w-4" />
                     New Mandate
                 </Button>

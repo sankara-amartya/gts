@@ -43,10 +43,12 @@ export function DocumentsPage() {
 
     const filteredPacks = useMemo(() => {
         return allDocumentPacks.filter(pack =>
-            pack.name.toLowerCase().includes(search.toLowerCase()) ||
-            pack.country.toLowerCase().includes(search.toLowerCase())
+            (pack.name.toLowerCase().includes(search.toLowerCase()) ||
+                pack.country.toLowerCase().includes(search.toLowerCase())) &&
+            (countryFilter === 'all' || pack.country === countryFilter) &&
+            (roleFilter === 'all' || pack.role === roleFilter)
         );
-    }, [search]);
+    }, [search, countryFilter, roleFilter]);
 
     const complianceSummary = useMemo(() => {
         const docsCollection = candidateDocuments ?? [];
@@ -281,16 +283,16 @@ export function DocumentsPage() {
     return (
         <div className="flex flex-col gap-8">
             <PageHeader title="Documents & Compliance">
-                <div className="relative">
+                <div className="relative w-full sm:w-64">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search packs, candidates, or documents..."
-                        className="pl-8 w-64"
+                        className="w-full pl-8"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
-                <Button onClick={handleNew}>
+                <Button onClick={handleNew} className="w-full sm:w-auto">
                     <PlusCircle className="mr-2 h-4 w-4" />
                     New Pack
                 </Button>
@@ -360,12 +362,12 @@ export function DocumentsPage() {
             </div>
 
             <Tabs defaultValue="packs" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5">
-                    <TabsTrigger value="packs">Document Packs</TabsTrigger>
-                    <TabsTrigger value="queue">Verification Queue</TabsTrigger>
-                    <TabsTrigger value="expiry">Expiry Tracker</TabsTrigger>
-                    <TabsTrigger value="audit">Compliance Audit</TabsTrigger>
-                    <TabsTrigger value="matrix">Pack Matrix</TabsTrigger>
+                <TabsList className="w-full justify-start overflow-x-auto">
+                    <TabsTrigger value="packs" className="shrink-0">Document Packs</TabsTrigger>
+                    <TabsTrigger value="queue" className="shrink-0">Verification Queue</TabsTrigger>
+                    <TabsTrigger value="expiry" className="shrink-0">Expiry Tracker</TabsTrigger>
+                    <TabsTrigger value="audit" className="shrink-0">Compliance Audit</TabsTrigger>
+                    <TabsTrigger value="matrix" className="shrink-0">Pack Matrix</TabsTrigger>
                 </TabsList>
                 <TabsContent value="packs">
                     <DocumentsTable packs={filteredPacks} onEdit={handleEdit} />

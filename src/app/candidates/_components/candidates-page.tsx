@@ -47,17 +47,17 @@ export function CandidatesPage() {
     return (
         <div className="flex flex-col gap-8">
             <PageHeader title="Candidates">
-                <div className="relative">
+                <div className="relative w-full sm:w-64">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search candidates..."
-                        className="pl-8 w-64"
+                        className="w-full pl-8"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
                  <Select value={mandateFilter} onValueChange={setMandateFilter}>
-                    <SelectTrigger className="w-[240px]">
+                    <SelectTrigger className="w-full sm:w-[240px]">
                         <SelectValue placeholder="Filter by mandate" />
                     </SelectTrigger>
                     <SelectContent>
@@ -68,7 +68,7 @@ export function CandidatesPage() {
                     </SelectContent>
                 </Select>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-full sm:w-[180px]">
                         <SelectValue placeholder="Filter by status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -78,11 +78,11 @@ export function CandidatesPage() {
                         ))}
                     </SelectContent>
                 </Select>
-                <Button variant="outline" onClick={() => setBulkUploadOpen(true)}>
+                <Button variant="outline" onClick={() => setBulkUploadOpen(true)} className="w-full sm:w-auto">
                     <Upload className="mr-2 h-4 w-4" />
                     Bulk Upload
                 </Button>
-                <Button onClick={handleNew}>
+                <Button onClick={handleNew} className="w-full sm:w-auto">
                     <PlusCircle className="mr-2 h-4 w-4" />
                     New Candidate
                 </Button>
